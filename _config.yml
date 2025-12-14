@@ -1,0 +1,49 @@
+title: HSB Learnings
+description: "A space to share my learnings and experiences."
+author:
+  name: "HSB"
+  bio: "Lifelong learner sharing knowledge."
+  # avatar: "/assets/images/bio-photo.jpg" # Update this later
+
+remote_theme: mmistakes/minimal-mistakes
+minimal_mistakes_skin: "default" # Options: default, air, contrast, dirt, mint, plum, sunrise
+
+# Plugins
+plugins:
+  - jekyll-include-cache
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Navigation
+locale: "en-US"
+search: true
+url: "https://hbhadauria.github.io" # Replace with your actual URL logic if needed
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "single"
+      author_profile: true
+      read_time: true
+      comments: false
+      share: true
+      related: true
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "single"
+      author_profile: true
+
+# Navigation links location
+navigation:
+  main:
+    - title: "Home"
+      url: /
+    - title: "Articles"
+      url: /articles/
+    - title: "Contact"
+      url: /contact/
