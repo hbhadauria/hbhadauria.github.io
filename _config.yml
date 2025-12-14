@@ -1,9 +1,9 @@
 title: HSB Learnings
 description: "A space to share my learnings and experiences."
 author:
-  name: "HSB"
+  name: "Harshit Bhadauria"
   bio: "Lifelong learner sharing knowledge."
-  # avatar: "/assets/images/bio-photo.jpg" # Update this later
+  avatar: "https://github.com/hbhadauria.png"
 
 remote_theme: mmistakes/minimal-mistakes
 minimal_mistakes_skin: "default" # Options: default, air, contrast, dirt, mint, plum, sunrise
@@ -29,7 +29,7 @@ defaults:
       author_profile: true
       read_time: true
       comments: false
-      share: true
+      share: false
       related: true
   - scope:
       path: ""
@@ -38,12 +38,4 @@ defaults:
       layout: "single"
       author_profile: true
 
-# Navigation links location
-navigation:
-  main:
-    - title: "Home"
-      url: /
-    - title: "Articles"
-      url: /articles/
-    - title: "Contact"
-      url: /contact/
+
