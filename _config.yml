@@ -8,11 +8,25 @@ author:
 remote_theme: mmistakes/minimal-mistakes
 minimal_mistakes_skin: "default" # Options: default, air, contrast, dirt, mint, plum, sunrise
 
+# Analytics
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-BDV07GK68V"
+
 # Plugins
 plugins:
   - jekyll-include-cache
   - jekyll-feed
   - jekyll-sitemap
+  - jekyll-seo-tag
+  - jemoji
+  - jekyll-paginate
+  - jekyll-redirect-from
+
+# Pagination
+paginate: 5
+paginate_path: "/page:num/"
 
 # Navigation
 locale: "en-US"
