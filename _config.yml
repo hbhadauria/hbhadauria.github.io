@@ -1,55 +1,144 @@
+# -------------------------
+# Site Settings
+# -------------------------
+lang: en
+timezone: Asia/Kolkata
+
 title: HSB Learnings
-description: "A space to share my learnings and experiences."
-author:
-  name: "Harshit Bhadauria"
-  bio: "Lifelong learner sharing knowledge."
-  avatar: "https://github.com/hbhadauria.png"
+tagline: Solution Architect · .NET Specialist · AI Enthusiast
+description: >-
+  Sharing my journey through tech — Solution Architecture, .NET, AI-assisted development,
+  cloud-native patterns, and more. Written by Harshit Bhadauria.
 
-remote_theme: mmistakes/minimal-mistakes
-minimal_mistakes_skin: "default" # Options: default, air, contrast, dirt, mint, plum, sunrise
+url: "https://hbhadauria.github.io"
+baseurl: ""
 
-# Analytics
-analytics:
-  provider: "google-gtag"
-  google:
-    tracking_id: "G-BDV07GK68V"
+# -------------------------
+# Social & Author
+# -------------------------
+github:
+  username: hbhadauria
 
-# Plugins
-plugins:
-  - jekyll-include-cache
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-seo-tag
-  - jemoji
-  - jekyll-paginate
-  - jekyll-redirect-from
+twitter:
+  username: iam_hbhadauria
 
-# Pagination
-paginate: 5
-paginate_path: "/page:num/"
+social:
+  name: Harshit Bhadauria
+  email: ""
+  links:
+    - https://twitter.com/iam_hbhadauria
+    - https://www.linkedin.com/in/harshitbhadauria/
+    - https://github.com/hbhadauria
 
-# Navigation
-locale: "en-US"
-search: true
-url: "https://hbhadauria.github.io" # Replace with your actual URL logic if needed
+# -------------------------
+# Appearance
+# -------------------------
+theme_mode: # [light | dark] — leave blank for system default (auto toggle)
+avatar: "https://github.com/hbhadauria.png"
 
-# Defaults
+# -------------------------
+# SEO & Analytics
+# -------------------------
+google_analytics:
+  id: "G-BDV07GK68V"
+
+google_site_verification: # Add your GSC token here if you have one
+
+seo_keywords:
+  - .NET
+  - solution architecture
+  - AI development
+  - Jekyll blog
+  - mobile app development
+  - cloud native
+
+# -------------------------
+# Theme & Sidebar
+# -------------------------
+toc: true                       # Table of contents on posts
+comments:
+  active: ""                    # Set to 'disqus', 'utterances', or 'giscus' to enable
+  disqus:
+    shortname: ""
+  utterances:
+    repo: ""
+    issue_term: ""
+  giscus:
+    repo: ""
+    repo_id: ""
+    category: ""
+    category_id: ""
+    mapping: ""
+    input_position: ""
+    lang: ""
+    reactions_enabled: ""
+
+paginate: 10
+
+# -------------------------
+# Collections / Defaults
+# -------------------------
 defaults:
   - scope:
       path: ""
-      type: "posts"
+      type: posts
     values:
-      layout: "single"
-      author_profile: true
-      read_time: true
+      layout: post
       comments: false
-      share: false
-      related: true
+      toc: true
+      math: false
+      mermaid: false
+
+  - scope:
+      path: _drafts
+    values:
+      comments: false
+
   - scope:
       path: ""
-      type: "pages"
+      type: tabs
     values:
-      layout: "single"
-      author_profile: true
+      layout: page
+      permalink: /:title/
 
+# -------------------------
+# Plugins
+# -------------------------
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
 
+# -------------------------
+# Sass
+# -------------------------
+sass:
+  style: compressed
+
+# -------------------------
+# Compression
+# -------------------------
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  profile: false
+  blanklines: false
+  ignore:
+    envs: [development]
+
+# -------------------------
+# Exclude from build
+# -------------------------
+exclude:
+  - "*.gem"
+  - "*.gemspec"
+  - docs
+  - tools
+  - README.md
+  - LICENSE
+  - "*.config.js"
+  - package*.json
+  - rollup.config.js
+  - node_modules
+  - Gruntfile.js
