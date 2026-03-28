@@ -1,3 +1,6 @@
+# Import the theme
+theme: jekyll-theme-chirpy
+
 # -------------------------
 # Site Settings
 # -------------------------
@@ -37,46 +40,73 @@ theme_mode: # [light | dark] — leave blank for system default (auto toggle)
 avatar: "https://github.com/hbhadauria.png"
 
 # -------------------------
-# SEO & Analytics
+# Analytics
 # -------------------------
-google_analytics:
-  id: "G-BDV07GK68V"
+analytics:
+  google:
+    id: "G-BDV07GK68V"
 
-google_site_verification: # Add your GSC token here if you have one
-
-seo_keywords:
-  - .NET
-  - solution architecture
-  - AI development
-  - Jekyll blog
-  - mobile app development
-  - cloud native
+# -------------------------
+# Site Verification
+# -------------------------
+webmaster_verifications:
+  google: # fill in your Google verification code
 
 # -------------------------
 # Theme & Sidebar
 # -------------------------
-toc: true                       # Table of contents on posts
+toc: true
+
 comments:
-  active: ""                    # Set to 'disqus', 'utterances', or 'giscus' to enable
+  provider: # [disqus | utterances | giscus]
   disqus:
-    shortname: ""
+    shortname:
   utterances:
-    repo: ""
-    issue_term: ""
+    repo:
+    issue_term:
   giscus:
-    repo: ""
-    repo_id: ""
-    category: ""
-    category_id: ""
-    mapping: ""
-    input_position: ""
-    lang: ""
-    reactions_enabled: ""
+    repo:
+    repo_id:
+    category:
+    category_id:
+    mapping:
+    strict:
+    input_position:
+    lang:
+    reactions_enabled:
+
+pwa:
+  enabled: true
+  cache:
+    enabled: true
+    deny_paths:
 
 paginate: 10
 
 # -------------------------
-# Collections / Defaults
+# Kramdown
+# -------------------------
+kramdown:
+  footnote_backlink: "&#8617;&#xfe0e;"
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
+
+# -------------------------
+# Collections
+# -------------------------
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+# -------------------------
+# Defaults
 # -------------------------
 defaults:
   - scope:
@@ -84,10 +114,9 @@ defaults:
       type: posts
     values:
       layout: post
-      comments: false
+      comments: true
       toc: true
-      math: false
-      mermaid: false
+      permalink: /posts/:title/
 
   - scope:
       path: _drafts
@@ -135,8 +164,18 @@ exclude:
   - tools
   - README.md
   - LICENSE
+  - purgecss.js
   - "*.config.js"
-  - package*.json
-  - rollup.config.js
-  - node_modules
-  - Gruntfile.js
+  - "package*.json"
+
+# -------------------------
+# Jekyll Archives
+# -------------------------
+jekyll-archives:
+  enabled: [categories, tags]
+  layouts:
+    category: category
+    tag: tag
+  permalinks:
+    tag: /tags/:name/
+    category: /categories/:name/
