@@ -103,11 +103,9 @@ defaults:
 
 # -------------------------
 # Plugins
+# NOTE: jekyll-feed, jekyll-sitemap, jekyll-seo-tag are bundled
+# by the Chirpy theme gem — do not redeclare them here.
 # -------------------------
-plugins:
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-seo-tag
 
 # -------------------------
 # Sass
