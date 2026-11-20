@@ -1,0 +1,87 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+interface Meta {
+  title: string;
+  description: string;
+  eyebrow?: string;
+}
+
+interface Props extends Partial<Meta> {
+  frontmatter?: Meta;
+  prose?: boolean;
+  wide?: boolean;
+  subnav?: 'writing' | 'none';
+}
+
+const props = Astro.props;
+const meta = props.frontmatter ?? props;
+const title = meta.title ?? '';
+const description = meta.description ?? '';
+const eyebrow = meta.eyebrow;
+const prose = props.prose ?? true;
+const wide = props.wide ?? false;
+const subnav = props.subnav ?? 'none';
+
+const pathname = Astro.url.pathname;
+const containerWidth = wide ? 'max-w-[1140px]' : 'max-w-[960px]';
+
+const writingTabs = [
+  { label: 'All writing', href: '/archives/', match: '/archives' },
+  { label: 'Series', href: '/series/', match: '/series' },
+  { label: 'Categories', href: '/categories/', match: '/categories' },
+  { label: 'Tags', href: '/tags/', match: '/tags' },
+] as const;
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="grid-bg border-b bd">
+    <div
+      class={`${containerWidth} mx-auto px-5 sm:px-8 py-9 sm:py-11`}
+      style="background: linear-gradient(90deg, var(--bg) 55%, transparent);"
+    >
+      <header>
+        {eyebrow && <div class="mono text-xs acc2">// {eyebrow}</div>}
+        <h1 class="serif text-3xl sm:text-4xl font-semibold mt-2 text-fg">
+          {title}
+        </h1>
+        {
+          description && (
+            <p class="muted mt-2.5 text-sm sm:text-base max-w-2xl leading-relaxed">
+              {description}
+            </p>
+          )
+        }
+        {
+          subnav === 'writing' && (
+            <nav
+              aria-label="Writing views"
+              class="flex flex-wrap gap-2 mt-5 text-xs mono"
+            >
+              {writingTabs.map((tab) => {
+                const isTabActive = pathname.startsWith(tab.match);
+                return (
+                  <a
+                    href={tab.href}
+                    class={
+                      isTabActive
+                        ? 'accbg rounded-full px-3.5 py-1.5 font-medium transition-opacity hover:opacity-90'
+                        : 'card rounded-full px-3.5 py-1.5 muted hover:text-fg hover:border-[var(--accent)] transition-colors'
+                    }
+                    aria-current={isTabActive ? 'page' : undefined}
+                  >
+                    {tab.label}
+                  </a>
+                );
+              })}
+            </nav>
+          )
+        }
+      </header>
+    </div>
+  </section>
+
+  <div class={`${containerWidth} mx-auto px-5 sm:px-8 py-8 sm:py-10`} data-pagefind-body>
+    {prose ? <div class="prose prose-ep max-w-none"><slot /></div> : <slot />}
+  </div>
+</BaseLayout>

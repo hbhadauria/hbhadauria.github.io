@@ -1,0 +1,35 @@
+export const SITE = {
+  author: 'Harshit Bhadauria',
+  role: 'Solution Architect',
+  brandTitle: 'HSB Learnings',
+  fullTitle: 'Harshit Bhadauria · HSB Learnings',
+  tagline: 'Designing Scalable Systems · Shipping Faster with AI',
+  description:
+    'Field notes on system architecture, cloud-native patterns, and AI-assisted delivery, plus the projects behind them.',
+  url: 'https://hbhadauria.github.io',
+  gaId: 'G-BDV07GK68V',
+  defaultHue: 245,
+  timezone: 'Asia/Kolkata',
+  social: {
+    linkedin: 'https://www.linkedin.com/in/harshitbhadauria/',
+    twitter: 'https://twitter.com/iam_hbhadauria',
+    github: 'https://github.com/hbhadauria',
+    calchubRepo: 'https://github.com/hbhadauria/CalcHub',
+    calchubPlayStore: 'https://play.google.com/store/apps/details?id=com.hsb.calchub',
+  },
+  nav: [
+    { label: 'Home', href: '/', match: ['/'] },
+    { label: 'Writing', href: '/archives/', match: ['/archives/', '/posts/', '/categories/', '/tags/'] },
+    { label: 'Series', href: '/series/', match: ['/series/'] },
+    { label: 'Projects', href: '/projects/', match: ['/projects/'] },
+    { label: 'About', href: '/about/', match: ['/about/'] },
+  ],
+  topics: [
+    { icon: '🏗️', label: 'System Architecture', href: '/categories/architecture/' },
+    { icon: '🤖', label: 'AI-Assisted Engineering', href: '/categories/ai/' },
+    { icon: '☁️', label: 'Cloud & Distributed Systems', href: '/categories/cloud/' },
+    { icon: '⚡', label: 'DevOps & CI/CD', href: '/categories/devops/' },
+    { icon: '📱', label: 'Mobile & Product', href: '/categories/apps/' },
+    { icon: '🧭', label: 'Engineering Notes', href: '/categories/updates/' },
+  ],
+} as const;

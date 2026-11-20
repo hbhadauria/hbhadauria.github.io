@@ -1,0 +1,60 @@
+---
+interface Props {
+  beforeLabel?: string;
+  afterLabel?: string;
+  before?: string[];
+  after?: string[];
+}
+
+const {
+  beforeLabel = 'Before',
+  afterLabel = 'After',
+  before = [],
+  after = [],
+} = Astro.props;
+
+const hasBeforeSlot = Astro.slots.has('before');
+const hasAfterSlot = Astro.slots.has('after');
+---
+
+<div class="my-6 grid grid-cols-1 md:grid-cols-2 gap-4 not-prose text-sm">
+  <div class="card rounded-xl overflow-hidden">
+    <div class="soft px-4 py-2 text-xs mono muted border-b bd font-semibold uppercase tracking-wide">
+      {beforeLabel}
+    </div>
+    <div class="p-4 text-[13.5px] leading-relaxed muted space-y-1.5">
+      {
+        hasBeforeSlot ? (
+          <slot name="before" />
+        ) : (
+          <ul class="list-disc pl-4 space-y-1">
+            {before.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+  <div
+    class="card rounded-xl overflow-hidden"
+    style="border-color: var(--accent2);"
+  >
+    <div class="soft px-4 py-2 text-xs mono acc2 border-b bd font-semibold uppercase tracking-wide">
+      {afterLabel}
+    </div>
+    <div class="p-4 text-[13.5px] leading-relaxed text-fg space-y-1.5">
+      {
+        hasAfterSlot ? (
+          <slot name="after" />
+        ) : (
+          <ul class="list-disc pl-4 space-y-1">
+            {after.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</div>

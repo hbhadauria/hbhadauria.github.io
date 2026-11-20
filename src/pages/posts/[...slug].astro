@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '@/layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const { data } = post;
+
+let seriesTotal: number | undefined;
+let nextSeriesPost: { title: string; slug: string } | undefined;
+if (data.series) {
+  const siblings = (
+    await getCollection('blog', (p) => !p.data.draft && p.data.series === data.series)
+  ).sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+  seriesTotal = siblings.length;
+  const next = siblings.find(
+    (p) => (p.data.seriesOrder ?? 0) > (data.seriesOrder ?? 0),
+  );
+  if (next) nextSeriesPost = { title: next.data.title, slug: next.id };
+}
+---
+
+<PostLayout
+  title={data.title}
+  description={data.description}
+  pubDate={data.pubDate}
+  updatedDate={data.updatedDate}
+  categories={[...data.categories]}
+  tags={[...data.tags]}
+  readingTime={data.readingTime}
+  series={data.series}
+  seriesOrder={data.seriesOrder}
+  seriesTotal={seriesTotal}
+  nextSeriesPost={nextSeriesPost}
+  tldr={data.tldr}
+  headings={headings}
+  ogImage={`/og/posts/${post.id}.png`}
+>
+  <Content />
+</PostLayout>

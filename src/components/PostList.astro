@@ -1,0 +1,71 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { isoDay } from '@/lib/utils';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  empty?: string;
+}
+
+const { posts, empty = 'No posts yet.' } = Astro.props;
+---
+
+{
+  posts.length === 0 ? (
+    <div class="card rounded-xl p-6 text-sm muted">{empty}</div>
+  ) : (
+    <ul class="space-y-3">
+      {posts.map((post) => (
+        <li>
+          <a
+            href={`/posts/${post.id}/`}
+            class="card rounded-xl p-5 hover:border-[var(--accent)] transition-colors block group"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs mono muted">
+              <div class="flex flex-wrap items-center gap-2">
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {isoDay(post.data.pubDate)}
+                </time>
+                {post.data.readingTime && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span>{post.data.readingTime}</span>
+                  </>
+                )}
+                {post.data.series && (
+                  <span class="tag acc">
+                    {post.data.series} · Part {post.data.seriesOrder ?? 1}
+                  </span>
+                )}
+              </div>
+              <span class="acc group-hover:translate-x-0.5 transition-transform">
+                Read →
+              </span>
+            </div>
+
+            <h3 class="text-lg font-semibold text-fg group-hover:text-[var(--accent)] transition-colors mt-2 leading-snug">
+              {post.data.title}
+            </h3>
+
+            <p class="muted text-sm mt-1.5 line-clamp-2 leading-relaxed">
+              {post.data.description}
+            </p>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 mt-3.5 pt-3 border-t bd">
+              <div class="flex flex-wrap gap-1.5">
+                {post.data.categories.map((cat) => (
+                  <span class="tag acc2">{cat}</span>
+                ))}
+              </div>
+              <div class="mono text-[11px] muted flex flex-wrap gap-2">
+                {post.data.tags.slice(0, 3).map((tag) => (
+                  <span>#{tag}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

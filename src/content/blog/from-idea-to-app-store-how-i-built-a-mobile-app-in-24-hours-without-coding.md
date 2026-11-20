@@ -1,8 +1,12 @@
 ---
 title: "From Idea to App Store: How I Built a Mobile App in 24 Hours (Without Coding)"
-date: 2025-12-14 09:00:00 +0530
+description: "How I shipped CalcHub, a polished Android finance app, in under 24 hours by acting as product manager for a Gemini-powered agent in Antigravity."
+pubDate: 2025-12-14T09:00:00+05:30
 categories: [Apps, AI]
 tags: [android, ai, gemini, antigravity, neopop, mobile]
+series: "AI-Assisted Engineering"
+seriesOrder: 1
+readingTime: "4 min read"
 image:
   path: https://play-lh.googleusercontent.com/RkiQWUP72SWhRO8wuig2dhQ6CXS7MIZAnAEER-T4zoZTJFnog6Ro6L9gB0jTlgBAQDQSHoJSTkxtNmRAHqidsgE=w526-h296-rw
   alt: CalcHub App on Google Play

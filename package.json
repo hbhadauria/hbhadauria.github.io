@@ -1,0 +1,37 @@
+{
+  "name": "hsb-learnings",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build && npx pagefind --site dist",
+    "verify": "node scripts/verify-site.mjs",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.6",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.6",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.13",
+    "satori": "^0.63.2",
+    "tailwindcss": "^4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@vite-pwa/astro": "^2.0.3",
+    "pagefind": "^1.6.0",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "fflate": "^0.8.3",
+    "postcss-selector-parser": "^6.1.6"
+  }
+}

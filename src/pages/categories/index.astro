@@ -1,0 +1,52 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { CATEGORIES } from '@/content.config';
+import { SITE } from '@/data/site';
+import { getPublishedPosts, slugify } from '@/lib/utils';
+
+const posts = await getPublishedPosts();
+const rows = CATEGORIES.map((name) => {
+  const slug = slugify(name);
+  const topic = SITE.topics.find((t) => t.href === `/categories/${slug}/`);
+  return {
+    name,
+    slug,
+    icon: topic?.icon ?? '📁',
+    label: topic?.label ?? name,
+    count: posts.filter((p) => (p.data.categories as string[]).includes(name)).length,
+  };
+});
+---
+
+<PageLayout
+  title="Categories"
+  description="Browse posts by topic."
+  eyebrow="categories"
+  prose={false}
+  wide={true}
+  subnav="writing"
+>
+  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {
+      rows.map((r) => (
+        <li>
+          <a
+            href={`/categories/${r.slug}/`}
+            class="card rounded-xl px-4 py-3.5 flex items-center justify-between gap-3 hover:border-[var(--accent)] transition-colors"
+          >
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span aria-hidden="true">{r.icon}</span>
+              <div class="min-w-0">
+                <div class="font-medium text-fg">{r.name}</div>
+                <div class="text-xs muted truncate">{r.label}</div>
+              </div>
+            </div>
+            <span class="mono text-xs muted shrink-0">
+              {r.count} {r.count === 1 ? 'post' : 'posts'}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</PageLayout>

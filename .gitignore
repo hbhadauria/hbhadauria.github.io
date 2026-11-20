@@ -1,16 +1,25 @@
-# Jekyll build output
-_site/
-.sass-cache/
-.jekyll-cache/
-.jekyll-metadata
-
-# Bundler
-.bundle/
-vendor/
-
-# Node (Chirpy uses npm for assets)
+# Dependencies
 node_modules/
-package-lock.json
 
-# Chirpy-specific
-assets/js/dist/
+# Astro build & cache
+dist/
+.astro/
+
+# Environment & secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.keystore
+*.jks
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS & editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
