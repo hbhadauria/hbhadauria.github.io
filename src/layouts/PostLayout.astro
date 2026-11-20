@@ -1,0 +1,247 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import BrandLogo from '@/components/BrandLogo.astro';
+import { SITE } from '@/data/site';
+
+interface HeadingItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  categories: string[];
+  tags: string[];
+  readingTime?: string;
+  series?: string;
+  seriesOrder?: number;
+  seriesTotal?: number;
+  nextSeriesPost?: { title: string; slug: string };
+  tldr?: string;
+  headings?: HeadingItem[];
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  categories,
+  tags,
+  readingTime,
+  series,
+  seriesOrder,
+  seriesTotal,
+  nextSeriesPost,
+  tldr,
+  headings = [],
+  ogImage,
+} = Astro.props;
+
+const formattedDate = pubDate.toISOString().slice(0, 10);
+const tocItems = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  ogType="article"
+  showProgress={true}
+>
+  <div class="max-w-[1140px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-1 lg:grid-cols-[170px_minmax(0,640px)_190px] gap-8 lg:gap-10 justify-center">
+    <!-- Left Metadata Rail -->
+    <aside class="text-xs muted space-y-3 mono">
+      <div>
+        <a href="/archives/" class="hover:text-fg transition-colors">
+          ← All writing
+        </a>
+      </div>
+      <div class="flex flex-wrap lg:flex-col gap-x-4 gap-y-2">
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        {
+          updatedDate && (
+            <div class="text-[11px]">
+              Updated {updatedDate.toISOString().slice(0, 10)}
+            </div>
+          )
+        }
+        {readingTime && <div>{readingTime}</div>}
+        <div class="flex flex-wrap items-center gap-1.5">
+          {
+            categories.map((cat, idx) => (
+              <>
+                {idx > 0 && (
+                  <span class="muted" aria-hidden="true">
+                    ·
+                  </span>
+                )}
+                <a
+                  href={`/categories/${slugify(cat)}/`}
+                  class="acc hover:underline"
+                >
+                  {cat}
+                </a>
+              </>
+            ))
+          }
+        </div>
+      </div>
+      <div class="flex flex-wrap lg:flex-col gap-1.5 pt-1">
+        {
+          tags.map((tag) => (
+            <a
+              href={`/tags/${slugify(tag)}/`}
+              class="hover:text-fg transition-colors"
+            >
+              #{tag}
+            </a>
+          ))
+        }
+      </div>
+    </aside>
+
+    <!-- Main Reading Column -->
+    <article class="min-w-0" data-pagefind-body>
+      <header>
+        <h1 class="serif text-3xl sm:text-4xl font-semibold leading-tight text-fg">
+          {title}
+        </h1>
+        <p class="muted mt-3 text-base sm:text-lg leading-relaxed">
+          {description}
+        </p>
+
+        {
+          series && (
+            <div class="card rounded-lg p-3 mt-5 text-sm flex flex-wrap items-center justify-between gap-2">
+              <span>
+                <a href="/series/" class="font-semibold acc hover:underline">
+                  Series · {series}
+                </a>
+                {seriesOrder && (
+                  <span class="muted">
+                    {' '}
+                    · part {seriesOrder}
+                    {seriesTotal && seriesTotal > 1 ? ` of ${seriesTotal}` : ''}
+                  </span>
+                )}
+              </span>
+              {nextSeriesPost ? (
+                <a
+                  href={`/posts/${nextSeriesPost.slug}/`}
+                  class="muted hover:text-fg text-xs mono"
+                >
+                  Next: {nextSeriesPost.title} →
+                </a>
+              ) : (
+                <a href="/series/" class="muted hover:text-fg text-xs mono">
+                  View series →
+                </a>
+              )}
+            </div>
+          )
+        }
+
+        {
+          tldr && (
+            <div
+              class="card rounded-xl p-4 mt-5 text-sm"
+              style="border-left: 4px solid var(--accent2);"
+            >
+              <div class="acc2 mono text-xs font-bold uppercase tracking-wide">
+                TL;DR
+              </div>
+              <p class="mt-1.5 text-fg leading-relaxed">{tldr}</p>
+            </div>
+          )
+        }
+      </header>
+
+      <div class="prose prose-ep max-w-none mt-8">
+        <slot />
+      </div>
+
+      <!-- Author Credibility Footer -->
+      <section class="mt-12 rounded-xl card soft p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <BrandLogo size={42} showWordmark={false} />
+          <div>
+            <div class="font-semibold text-sm text-fg">
+              {SITE.author}{' '}
+              <span class="mono text-xs font-normal muted">· {SITE.role}</span>
+            </div>
+            <p class="text-xs muted mt-0.5">{SITE.tagline}</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-medium">
+          <a
+            href={SITE.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-3 py-1.5 rounded-lg card hover:border-[var(--accent)] transition-colors"
+          >
+            LinkedIn ↗
+          </a>
+          <a
+            href={SITE.social.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-3 py-1.5 rounded-lg card hover:border-[var(--accent)] transition-colors"
+          >
+            𝕏 (Twitter) ↗
+          </a>
+          <a
+            href={SITE.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-3 py-1.5 rounded-lg card hover:border-[var(--accent)] transition-colors"
+          >
+            GitHub ↗
+          </a>
+          <a
+            href="/about/"
+            class="px-3 py-1.5 rounded-lg card hover:border-[var(--accent)] transition-colors"
+          >
+            About →
+          </a>
+        </div>
+      </section>
+    </article>
+
+    <!-- Right Sticky TOC -->
+    <aside class="hidden lg:block text-sm">
+      {
+        tocItems.length > 0 && (
+          <div class="sticky top-24">
+            <div class="mono text-xs muted mb-2.5 tracking-wide">
+              ON THIS PAGE
+            </div>
+            <ul class="space-y-2 border-l bd pl-3 text-[13px]">
+              {tocItems.map((heading) => (
+                <li class={heading.depth === 3 ? 'pl-3' : ''}>
+                  <a
+                    href={`#${heading.slug}`}
+                    class="muted hover:text-fg transition-colors block leading-snug"
+                  >
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </aside>
+  </div>
+</BaseLayout>

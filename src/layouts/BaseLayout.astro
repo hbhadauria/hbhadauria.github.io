@@ -1,0 +1,401 @@
+---
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/600.css';
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/600.css';
+import '@fontsource/space-grotesk/700.css';
+import BrandLogo from '@/components/BrandLogo.astro';
+import GoogleAnalytics from '@/components/GoogleAnalytics.astro';
+import PwaReloadToast from '@/components/PwaReloadToast.astro';
+import SearchModal from '@/components/SearchModal.astro';
+import { SITE } from '@/data/site';
+import '@/styles/tokens.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  showProgress?: boolean;
+  canonicalUrl?: string;
+}
+
+const {
+  title = SITE.brandTitle,
+  description = SITE.description,
+  ogImage = '/og/default.png',
+  ogType = 'website',
+  showProgress = false,
+  canonicalUrl,
+} = Astro.props;
+
+const pageTitle = title.includes(SITE.brandTitle)
+  ? title
+  : `${title} · ${SITE.brandTitle}`;
+const canonical = canonicalUrl ?? new URL(Astro.url.pathname, SITE.url).toString();
+const ogImageUrl = ogImage.startsWith('http')
+  ? ogImage
+  : new URL(ogImage, SITE.url).toString();
+const pathname = Astro.url.pathname;
+
+const isActive = (matches: readonly string[]) =>
+  matches.some((prefix) =>
+    prefix === '/' ? pathname === '/' : pathname.startsWith(prefix),
+  );
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={SITE.brandTitle}
+      href="/feed.xml"
+    />
+
+    <!-- OpenGraph & Twitter -->
+    <meta property="og:site_name" content={SITE.brandTitle} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@iam_hbhadauria" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- FOUC-free theme & accent hue init -->
+    <script is:inline define:vars={{ defaultHue: SITE.defaultHue }}>
+      (function () {
+        try {
+          const savedTheme = localStorage.getItem('hsb-theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = savedTheme === 'dark' || savedTheme === 'light'
+            ? savedTheme
+            : prefersDark
+              ? 'dark'
+              : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+          if (theme === 'dark') {
+            document.documentElement.setAttribute('data-dark', '');
+          } else {
+            document.documentElement.removeAttribute('data-dark');
+          }
+
+          const savedHue = localStorage.getItem('hsb-hue');
+          const hue = savedHue !== null ? Number(savedHue) : defaultHue;
+          if (!Number.isNaN(hue) && hue >= 0 && hue <= 360) {
+            document.documentElement.style.setProperty('--h', String(hue));
+          }
+        } catch {
+          // Ignore storage access failures in private contexts
+        }
+      })();
+    </script>
+    <GoogleAnalytics />
+  </head>
+  <body class="min-h-screen flex flex-col bg-bg text-fg">
+    {
+      showProgress && (
+        <div
+          id="reading-progress-track"
+          aria-hidden="true"
+          class="fixed top-0 left-0 right-0 h-1 z-50 soft pointer-events-none"
+        >
+          <div
+            id="reading-progress-bar"
+            class="h-full w-0 transition-[width] duration-75"
+            style="background: linear-gradient(90deg, var(--accent), var(--accent2));"
+          />
+        </div>
+      )
+    }
+
+    <header class="sticky top-0 z-40 border-b bd backdrop-blur-md bg-bg/90">
+      <div class="max-w-[1140px] mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-4">
+        <a href="/" class="hover:opacity-90 transition-opacity" aria-label={SITE.fullTitle}>
+          <BrandLogo />
+        </a>
+
+        <nav aria-label="Primary" class="hidden md:flex items-center gap-6 text-sm">
+          {
+            SITE.nav.map((item) => {
+              const active = isActive(item.match);
+              return (
+                <a
+                  href={item.href}
+                  class={
+                    active
+                      ? 'acc font-medium'
+                      : 'muted hover:text-fg transition-colors'
+                  }
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              );
+            })
+          }
+        </nav>
+
+        <div class="flex items-center gap-2 relative">
+          <button
+            type="button"
+            data-search-trigger
+            class="card rounded-md px-2.5 py-1.5 mono text-xs muted hover:text-fg transition-colors hidden sm:inline-flex items-center gap-1.5"
+            title="Search site (⌘K)"
+          >
+            <span>⌘K</span>
+            <span>search</span>
+          </button>
+
+          <button
+            type="button"
+            id="hue-toggle"
+            class="card rounded-md p-1.5 hover:opacity-90 transition-opacity inline-flex items-center justify-center"
+            aria-label="Customize accent hue"
+            aria-expanded="false"
+            aria-controls="hue-popover"
+            title="Accent hue"
+          >
+            <span
+              class="w-4 h-4 rounded-full block border bd"
+              style="background: var(--accent);"
+            />
+          </button>
+
+          <div
+            id="hue-popover"
+            class="hidden absolute right-0 top-12 w-60 card rounded-xl p-3.5 shadow-xl z-50 space-y-2.5"
+          >
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-fg">Accent hue</span>
+              <span id="hue-value" class="mono muted">{SITE.defaultHue}°</span>
+            </div>
+            <input
+              id="hue-slider"
+              type="range"
+              min="0"
+              max="360"
+              value={SITE.defaultHue}
+              class="w-full accent-[var(--accent)] cursor-pointer"
+              aria-label="Accent color hue slider"
+            />
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="muted mono">Fuwari-style --h</span>
+              <button
+                type="button"
+                id="hue-reset"
+                class="acc hover:underline font-medium"
+              >
+                Reset ({SITE.defaultHue}°)
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="theme-toggle"
+            class="card rounded-md px-2.5 py-1.5 text-xs mono muted hover:text-fg transition-colors"
+            aria-label="Toggle dark mode"
+            title="Toggle light / dark theme"
+          >
+            ◐
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav bar -->
+      <nav
+        aria-label="Mobile Primary"
+        class="md:hidden border-t bd px-5 py-2 flex items-center justify-between gap-4 text-xs overflow-x-auto"
+      >
+        <div class="flex items-center gap-4">
+          {
+            SITE.nav.map((item) => {
+              const active = isActive(item.match);
+              return (
+                <a
+                  href={item.href}
+                  class={active ? 'acc font-medium' : 'muted hover:text-fg'}
+                >
+                  {item.label}
+                </a>
+              );
+            })
+          }
+        </div>
+        <button
+          type="button"
+          data-search-trigger
+          class="mono muted hover:text-fg shrink-0"
+        >
+          ⌘K search
+        </button>
+      </nav>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t bd py-7 mt-12">
+      <div class="max-w-[1140px] mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs muted">
+        <div class="space-y-1">
+          <div class="text-fg font-medium">
+            © {new Date().getFullYear()} {SITE.author}
+          </div>
+          <div class="mono text-[11px]">{SITE.tagline}</div>
+        </div>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mono">
+          <a
+            href={SITE.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-fg transition-colors"
+          >
+            LinkedIn ↗
+          </a>
+          <a
+            href={SITE.social.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-fg transition-colors"
+          >
+            𝕏 ↗
+          </a>
+          <a
+            href={SITE.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-fg transition-colors"
+          >
+            GitHub ↗
+          </a>
+          <a href="/feed.xml" class="hover:text-fg transition-colors">RSS</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const DEFAULT_HUE = '245';
+      const root = document.documentElement;
+      const themeToggle = document.getElementById('theme-toggle');
+      const hueToggle = document.getElementById('hue-toggle');
+      const huePopover = document.getElementById('hue-popover');
+      const hueSlider = document.getElementById('hue-slider');
+      const hueValue = document.getElementById('hue-value');
+      const hueReset = document.getElementById('hue-reset');
+      const progressBar = document.getElementById('reading-progress-bar');
+
+      function applyHue(val: string) {
+        root.style.setProperty('--h', val);
+        if (hueSlider instanceof HTMLInputElement) hueSlider.value = val;
+        if (hueValue) hueValue.textContent = `${val}°`;
+        try {
+          localStorage.setItem('hsb-hue', val);
+        } catch {
+          // ignore
+        }
+      }
+
+      const initialHue =
+        root.style.getPropertyValue('--h').trim() || DEFAULT_HUE;
+      if (hueSlider instanceof HTMLInputElement) hueSlider.value = initialHue;
+      if (hueValue) hueValue.textContent = `${initialHue}°`;
+
+      themeToggle?.addEventListener('click', () => {
+        const next =
+          root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        if (next === 'dark') {
+          root.setAttribute('data-dark', '');
+        } else {
+          root.removeAttribute('data-dark');
+        }
+        try {
+          localStorage.setItem('hsb-theme', next);
+        } catch {
+          // ignore
+        }
+      });
+
+      hueToggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = Boolean(
+          huePopover && !huePopover.classList.contains('hidden'),
+        );
+        huePopover?.classList.toggle('hidden', isOpen);
+        hueToggle.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      document.addEventListener('click', (e) => {
+        if (
+          huePopover &&
+          !huePopover.classList.contains('hidden') &&
+          e.target instanceof Node &&
+          !huePopover.contains(e.target) &&
+          e.target !== hueToggle
+        ) {
+          huePopover.classList.add('hidden');
+          hueToggle?.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      hueSlider?.addEventListener('input', (e) => {
+        if (e.target instanceof HTMLInputElement) {
+          applyHue(e.target.value);
+        }
+      });
+
+      hueReset?.addEventListener('click', () => applyHue(DEFAULT_HUE));
+
+      document.querySelectorAll('[data-search-trigger]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          window.dispatchEvent(new CustomEvent('hsb:open-search'));
+        });
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('hsb:open-search'));
+        }
+      });
+
+      if (progressBar) {
+        const updateProgress = () => {
+          const scrollHeight =
+            document.documentElement.scrollHeight - window.innerHeight;
+          const pct =
+            scrollHeight > 0
+              ? Math.min(100, Math.max(0, (window.scrollY / scrollHeight) * 100))
+              : 0;
+          progressBar.style.width = `${pct}%`;
+        };
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        updateProgress();
+      }
+    </script>
+    <SearchModal />
+    <PwaReloadToast />
+  </body>
+</html>

@@ -1,0 +1,31 @@
+---
+interface Props {
+  goal?: string;
+  phase?: string;
+  result?: string;
+}
+
+const {
+  goal = 'GOAL & ARCHITECTURAL CONSTRAINT',
+  phase,
+  result,
+} = Astro.props;
+const hasResultSlot = Astro.slots.has('result');
+---
+
+<div class="my-6 rounded-xl overflow-hidden border bd card not-prose text-sm">
+  <div class="soft px-4 py-2 text-xs mono flex items-center justify-between gap-3 border-b bd">
+    <span class="acc font-semibold">▸ {goal}</span>
+    {phase && <span class="muted shrink-0">{phase}</span>}
+  </div>
+  <div class="px-4 py-3.5 text-[14.5px] leading-relaxed text-fg">
+    <slot />
+  </div>
+  {
+    (result || hasResultSlot) && (
+      <div class="soft px-4 py-2 text-xs mono acc2 border-t bd font-medium">
+        ✓ {result ? result : <slot name="result" />}
+      </div>
+    )
+  }
+</div>

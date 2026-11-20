@@ -1,0 +1,356 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/data/site';
+
+const pillars = [
+  {
+    icon: '🏗️',
+    title: 'Solution Architecture',
+    summary:
+      'Designing enterprise-scale distributed systems using microservices, domain-driven boundaries, and event-driven patterns.',
+    tags: ['DDD', 'Microservices', 'Event-Driven', 'System Design'],
+  },
+  {
+    icon: '🤖',
+    title: 'AI-Assisted Engineering',
+    summary:
+      'Accelerating software delivery across the lifecycle using LLMs, architectural specs, interactive prototypes, explicit ADRs, and strict quality gates.',
+    tags: ['Gemini', 'Claude', 'Copilot', 'Antigravity'],
+  },
+  {
+    icon: '☁️',
+    title: 'Cloud & Distributed Systems',
+    summary:
+      'Building resilient cloud-native workloads across AWS and Azure with containers, Kubernetes orchestration, and Dapr.',
+    tags: ['AWS', 'Azure', 'Docker', 'Kubernetes', 'Dapr'],
+  },
+  {
+    icon: '⚡',
+    title: 'DevOps & Release Automation',
+    summary:
+      'Automated CI/CD pipelines, strict build and schema gates, unit/UI test suites, and zero-touch GitHub releases.',
+    tags: ['GitHub Actions', 'Azure DevOps', 'CI/CD', 'Quality Gates'],
+  },
+];
+
+const toolbelt = [
+  {
+    title: 'Languages & Frameworks',
+    eyebrow: '01 · CORE',
+    items: [
+      'C#',
+      '.NET / .NET Core',
+      'ASP.NET',
+      'TypeScript',
+      'JavaScript',
+      'Python',
+      'Kotlin',
+      'Jetpack Compose',
+      'MAUI',
+      'Astro',
+    ],
+  },
+  {
+    title: 'Cloud & Infrastructure',
+    eyebrow: '02 · PLATFORM',
+    items: [
+      'AWS',
+      'Azure',
+      'Docker',
+      'Kubernetes',
+      'Dapr',
+      'GitHub Actions',
+      'Azure DevOps',
+    ],
+  },
+  {
+    title: 'AI Platforms & Tooling',
+    eyebrow: '03 · ACCELERATION',
+    items: [
+      'Antigravity',
+      'Claude',
+      'Gemini',
+      'GitHub Copilot',
+      'Cursor',
+      'OpenAI',
+      'Ollama',
+      'Perplexity',
+    ],
+  },
+  {
+    title: 'Patterns & Practices',
+    eyebrow: '04 · DISCIPLINE',
+    items: [
+      'Microservices',
+      'Event-Driven Architecture',
+      'Domain-Driven Design',
+      'MVVM',
+      'CI/CD',
+      'TDD',
+      'ADR-Driven Design',
+    ],
+  },
+];
+
+const experience = [
+  {
+    area: 'Architecture',
+    details: 'Enterprise distributed systems, microservices, and cloud-native migrations.',
+  },
+  {
+    area: 'Mobile & Product',
+    details: 'Native Android (Kotlin, Jetpack Compose, Navigation 3) plus Xamarin and MAUI.',
+  },
+  {
+    area: 'AI Integration',
+    details: 'Spec-driven LLM workflows, AI engineering pipelines, and mockup-first rapid prototyping.',
+  },
+  {
+    area: 'DevOps & Quality',
+    details: 'GitHub Actions, Azure DevOps, automated test gates, and release automation.',
+  },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="Harshit Bhadauria — Tech Solution Architect designing scalable systems and shipping faster with AI."
+>
+  <div data-pagefind-body>
+    <!-- Architect Profile Hero -->
+    <section class="grid-bg border-b bd">
+      <div
+        class="max-w-[1140px] mx-auto px-5 sm:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-10 items-center"
+        style="background: linear-gradient(90deg, var(--bg) 55%, transparent);"
+      >
+        <div class="min-w-0">
+          <div class="mono text-xs acc2">// about · solution architect</div>
+          <h1 class="serif text-3xl sm:text-[42px] leading-[1.12] font-semibold mt-3 text-fg">
+            Hi, I’m {SITE.author}
+          </h1>
+          <div class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full card text-xs mono acc">
+            {SITE.tagline}
+          </div>
+          <p class="muted mt-4 text-[15px] leading-7 max-w-xl">
+            I design and build enterprise-scale distributed systems, combining
+            traditional software architecture (microservices, event-driven
+            patterns, cloud-native infrastructure) with AI-driven engineering
+            workflows to take products from architecture to production faster.
+          </p>
+          <div class="flex flex-wrap gap-2 mt-4 text-xs">
+            <span class="tag">📍 India · Global Delivery</span>
+            <span class="tag">🏗️ Solution Architect</span>
+            <span class="tag">🤖 AI-Assisted Engineering</span>
+          </div>
+          <div class="flex flex-wrap gap-2.5 mt-6 text-sm">
+            <a
+              href={SITE.social.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="accbg rounded-md px-4 py-2 font-medium hover:opacity-90 transition-opacity"
+            >
+              LinkedIn ↗
+            </a>
+            <a
+              href={SITE.social.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card rounded-md px-4 py-2 hover:border-[var(--accent)] transition-colors"
+            >
+              GitHub ↗
+            </a>
+            <a
+              href={SITE.social.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card rounded-md px-4 py-2 hover:border-[var(--accent)] transition-colors"
+            >
+              𝕏 (Twitter) ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Engineering Operating Principles Card -->
+        <aside class="min-w-0 card rounded-2xl overflow-hidden shadow-xl">
+          <div class="soft px-5 py-3 border-b bd flex items-center justify-between mono text-xs">
+            <span class="acc font-semibold">OPERATING MODEL</span>
+            <span class="muted">ARCH + AI</span>
+          </div>
+          <div class="p-5 space-y-4">
+            <div class="flex gap-3.5">
+              <span class="mono text-xs acc2 font-bold pt-0.5 shrink-0">01</span>
+              <div>
+                <h2 class="font-semibold text-sm text-fg">
+                  Architecture before code
+                </h2>
+                <p class="text-xs muted mt-1 leading-relaxed">
+                  Clear domain boundaries, explicit ADRs, and failure-mode
+                  thinking before implementation begins.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 pt-3 border-t bd">
+              <span class="mono text-xs acc2 font-bold pt-0.5 shrink-0">02</span>
+              <div>
+                <h2 class="font-semibold text-sm text-fg">
+                  Spec-driven AI engineering
+                </h2>
+                <p class="text-xs muted mt-1 leading-relaxed">
+                  Guide AI workflows with clear architectural specifications,
+                  interactive HTML prototypes, and tech-lead review.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-3.5 pt-3 border-t bd">
+              <span class="mono text-xs acc2 font-bold pt-0.5 shrink-0">03</span>
+              <div>
+                <h2 class="font-semibold text-sm text-fg">
+                  Automated quality gates
+                </h2>
+                <p class="text-xs muted mt-1 leading-relaxed">
+                  Strict CI builds, unit and UI test suites, security hygiene
+                  checks, and real-hardware verification.
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- What I Do -->
+    <section class="max-w-[1140px] mx-auto px-5 sm:px-8 py-10">
+      <div class="flex items-baseline justify-between gap-4">
+        <div>
+          <div class="mono text-xs acc2">// focus areas</div>
+          <h2 class="serif text-2xl font-semibold text-fg mt-1">What I Do</h2>
+        </div>
+        <a href="/series/" class="text-sm acc hover:underline">
+          Read series →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+        {
+          pillars.map((item) => (
+            <article class="card rounded-2xl p-5 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-2.5">
+                  <span class="w-9 h-9 rounded-xl soft border bd flex items-center justify-center text-base shrink-0">
+                    {item.icon}
+                  </span>
+                  <h3 class="font-semibold text-base text-fg">{item.title}</h3>
+                </div>
+                <p class="muted text-sm mt-3 leading-relaxed">{item.summary}</p>
+              </div>
+              <div class="flex flex-wrap gap-1.5 mt-4">
+                {item.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Architecture Toolbelt & Stack -->
+    <section class="max-w-[1140px] mx-auto px-5 sm:px-8 py-10 border-t bd">
+      <div>
+        <div class="mono text-xs acc2">// toolbelt</div>
+        <h2 class="serif text-2xl font-semibold text-fg mt-1">
+          Architecture Toolbelt &amp; Stack
+        </h2>
+        <p class="muted text-sm mt-1">
+          Platforms, languages, AI workflows, and engineering practices I work with daily.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+        {
+          toolbelt.map((group) => (
+            <div class="card rounded-2xl p-5">
+              <div class="mono text-[11px] acc2">{group.eyebrow}</div>
+              <h3 class="font-semibold text-base text-fg mt-1">{group.title}</h3>
+              <div class="flex flex-wrap gap-1.5 mt-3.5">
+                {group.items.map((item) => (
+                  <span class="tag">{item}</span>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Experience & Featured Project Spotlight -->
+    <section class="max-w-[1140px] mx-auto px-5 sm:px-8 py-10 border-t bd space-y-8">
+      <div>
+        <div class="mono text-xs acc2">// experience</div>
+        <h2 class="serif text-2xl font-semibold text-fg mt-1">
+          Experience Highlights
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+          {
+            experience.map((row) => (
+              <div class="card rounded-xl p-4">
+                <div class="font-semibold text-sm acc">{row.area}</div>
+                <p class="muted text-xs mt-1.5 leading-relaxed">{row.details}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Featured Project Spotlight -->
+      <div class="card rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-[1.15fr_1fr]">
+        <div
+          class="relative min-h-[220px] flex flex-col justify-between overflow-hidden"
+          style="background: linear-gradient(135deg, #052e2b 0%, #0b1320 45%, #1e1b4b 100%);"
+        >
+          <img src="/images/calchub/v3-banner.png" alt="CalcHub v3.0.0 Expressive Aurora Android finance app showcase" class="w-full h-full object-contain" loading="lazy" />
+        </div>
+        <div class="p-6 flex flex-col justify-between">
+          <div>
+            <div class="mono text-[11px] acc2">FEATURED PROJECT · CALCHUB</div>
+            <h3 class="text-xl font-semibold text-fg mt-1">
+              Offline-first Android Finance Calculators
+            </h3>
+            <p class="muted text-sm mt-2 leading-relaxed">
+              Started as a 24-hour prototype built with Gemini inside Antigravity
+              IDE, open-sourced under MIT, and fully revamped for{' '}
+              <strong class="text-fg">v3.0.0</strong> with Expressive Aurora
+              (Material 3 Expressive), Jetpack Navigation 3, and 55 automated tests.
+            </p>
+            <ul class="mt-3 space-y-1.5 text-xs muted">
+              <li>✓ 34 calculators · zero network permissions (<code class="mono">INTERNET=False</code>)</li>
+              <li>✓ <code class="mono">v3.0.0</code> live on Google Play, open-sourced on GitHub</li>
+            </ul>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-5 text-xs font-medium">
+            <a
+              href="/projects/calchub/"
+              class="accbg rounded-md px-3.5 py-2 hover:opacity-90 transition-opacity"
+            >
+              See case study →
+            </a>
+            <a
+              href="/posts/from-idea-to-app-store-how-i-built-a-mobile-app-in-24-hours-without-coding/"
+              class="card rounded-md px-3.5 py-2 hover:border-[var(--accent)] transition-colors"
+            >
+              Read 24h story →
+            </a>
+            <a
+              href={SITE.social.calchubPlayStore}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card rounded-md px-3.5 py-2 hover:border-[var(--accent)] transition-colors"
+            >
+              Google Play ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

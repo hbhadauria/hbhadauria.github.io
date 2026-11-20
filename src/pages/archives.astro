@@ -1,0 +1,26 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import PostList from '@/components/PostList.astro';
+import { getPublishedPosts } from '@/lib/utils';
+
+const posts = await getPublishedPosts();
+const years = [...new Set(posts.map((p) => p.data.pubDate.getFullYear()))];
+---
+
+<PageLayout
+  title="Archives"
+  description="Every post on HSB Learnings, newest first."
+  eyebrow="archives"
+  prose={false}
+  wide={true}
+  subnav="writing"
+>
+  {
+    years.map((year) => (
+      <section class="mb-8">
+        <h2 class="mono text-sm muted mb-2">{year}</h2>
+        <PostList posts={posts.filter((p) => p.data.pubDate.getFullYear() === year)} />
+      </section>
+    ))
+  }
+</PageLayout>

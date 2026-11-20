@@ -1,0 +1,94 @@
+---
+title: "From 24-Hour Prototype to CalcHub v3.0: Redesigning an Android App with AI & Strict Quality Gates"
+description: "What changed between CalcHub v2 and v3.0.0: Expressive Aurora, Navigation 3, a 35-line AppContainer, and the quality gates AI-built code had to pass."
+pubDate: 2026-11-20T09:00:00+05:30
+draft: false
+categories: [Apps, AI]
+tags: [android, kotlin, compose, navigation-3, agents, design-systems, cicd, ai]
+series: "AI-Assisted Engineering"
+seriesOrder: 2
+readingTime: "6 min read"
+tldr: "Shipping in 24 hours was the easy part. v3.0.0 was about making AI-written code earn trust: mockups before code, decisions as ADRs, and gates that run on a real device."
+---
+import { AgentStep, DecisionRecord, BeforeAfter } from '../../components/mdx';
+
+In [Part 1](/posts/from-idea-to-app-store-how-i-built-a-mobile-app-in-24-hours-without-coding/) I shipped CalcHub in about 24 hours. A year later (Nov 15–17, 2026) I did the opposite: a deliberate, gated full revamp to **v3.0.0**.
+
+## Why revamp after shipping in 24 hours
+
+v2 was a dark neon / glassmorphism UI on legacy navigation and an aging toolchain. v3.0.0 replaced it with **Expressive Aurora** (Material 3 Expressive, solid tonal surfaces, no blur across API 26–37) and moved to Kotlin 2.4.21 with Temurin JDK 25.
+
+<BeforeAfter
+  beforeLabel="v2.x"
+  afterLabel="v3.0.0"
+  before={['Neon glassmorphism with blur', 'Legacy NavHost', 'Older toolchain']}
+  after={['Expressive Aurora, no blur', 'Navigation 3 on all 34 routes', 'Kotlin 2.4.21 / JDK 25']}
+/>
+
+<BeforeAfter beforeLabel="v2.1.0 · Dark Neon Home" afterLabel="v3.0.0 · Expressive Aurora Home">
+  <figure slot="before" class="space-y-2">
+    <img src="/images/calchub/v2-home.png" alt="CalcHub v2.1.0 Dark Neon home screen with glowing card grid and floating bottom bar" class="mx-auto max-h-[460px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">v2.1.0 Dark Neon grid, blur overlays, and legacy NavHost</figcaption>
+  </figure>
+  <figure slot="after" class="space-y-2">
+    <img src="/images/calchub/v3-home-light.png" alt="CalcHub v3.0.0 Expressive Aurora light home screen with Continue Hero Banner and morphing category orbs" class="mx-auto max-h-[460px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">v3.0.0 Expressive Aurora with Continue banner and morphing orbs</figcaption>
+  </figure>
+</BeforeAfter>
+
+<figure class="my-6">
+  <img src="/images/calchub/v3-banner.png" alt="CalcHub v3.0.0 Expressive Aurora feature banner" class="rounded-xl border bd w-full" loading="lazy" />
+</figure>
+
+## Mockups before code
+
+Before touching Kotlin UI, I explored six interactive HTML mockups in headless Chrome and picked a direction, then implemented it.
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6 not-prose">
+  <img src="/images/calchub/v3-home-dark.png" alt="CalcHub v3.0.0 Expressive Aurora dark home screen" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-themes.png" alt="CalcHub v3.0.0 multi-theme skins and background gradients" class="rounded-xl border bd w-full" loading="lazy" />
+</div>
+
+## Decisions as ADRs
+
+<DecisionRecord id="ADR-01" title="Navigation" decision="Jetpack Navigation 3 only">
+  NavDisplay with serializable keys, predictive back, and a list-detail scene strategy: single pane below 600dp, side-by-side on tablets and foldables.
+</DecisionRecord>
+
+<DecisionRecord id="ADR-02" title="Dependency injection" decision="A 35-line manual AppContainer over Hilt">
+  No KSP codegen friction on Kotlin 2.4.21 + JVM 25.
+</DecisionRecord>
+
+<DecisionRecord id="ADR-03" title="Charts" decision="Compose Canvas + PathMeasure, no chart library">
+  Scrubbable wealth-growth, amortization and FIRE-timeline charts with haptic feedback.
+</DecisionRecord>
+
+<BeforeAfter beforeLabel="v2.1.0 · Neon Donut" afterLabel="v3.0.0 · Compose Canvas Spline & Donut">
+  <figure slot="before" class="space-y-2">
+    <img src="/images/calchub/v2-calculator.png" alt="CalcHub v2.1.0 Simple Interest calculator with neon donut chart and dark result card" class="mx-auto max-h-[460px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">Static neon donut breakdown inside a single-scroll dark card</figcaption>
+  </figure>
+  <figure slot="after" class="space-y-2">
+    <img src="/images/calchub/v3-sip-wealth.png" alt="CalcHub v3.0.0 SIP calculator showing interactive scrubbable wealth projection spline and gains share donut" class="mx-auto max-h-[460px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">Zero-dependency Canvas spline with scrub inspection and gains share</figcaption>
+  </figure>
+</BeforeAfter>
+
+## Raising the quality bar
+
+<AgentStep goal="GOAL & CONSTRAINT" phase="Quality gates" result="34 suites / 55 JVM + Robolectric tests · 4/4 Espresso + Compose on a Galaxy S9+ · 0 lint errors">
+  Enforce engineering standards through architectural specifications, automated static analysis, Robolectric UI tests, on-device instrumentation, SonarCloud cleanup, and a CI emulator workflow.
+</AgentStep>
+
+## Results & Release Status
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6 not-prose">
+  <img src="/images/calchub/v3-home-loan-emi.png" alt="CalcHub v3.0.0 Home Loan EMI prepayment simulator" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-income-tax.png" alt="CalcHub v3.0.0 Income Tax FY26 vs Old regime calculator" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-tools-lab.png" alt="CalcHub v3.0.0 Tools Lab with Utilities, Compare, Vault, and Formulas" class="rounded-xl border bd w-full" loading="lazy" />
+</div>
+
+The `v3.0.0` revamp passed all **34 unit test suites / 55 JVM + Robolectric tests**, `4/4` on-device Espresso + Compose instrumentation tests on a Samsung Galaxy S9+ (`SM-G965F`), zero lint errors, and an R8 release build (`INTERNET=False` verified in the merged release manifest). The release tag and source are published on [GitHub](https://github.com/hbhadauria/CalcHub), and `v3.0.0` is **live on Google Play**.
+
+- [**Download CalcHub on Google Play →**](https://play.google.com/store/apps/details?id=com.hsb.calchub)
+- [Source on GitHub](https://github.com/hbhadauria/CalcHub) (MIT)

@@ -1,0 +1,26 @@
+---
+import { SITE } from '@/data/site';
+
+const gaId = SITE.gaId;
+const isProd = import.meta.env.PROD;
+---
+
+{
+  isProd && gaId && (
+    <>
+      <script
+        is:inline
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+      />
+      <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          window.dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', gaId);
+      </script>
+    </>
+  )
+}

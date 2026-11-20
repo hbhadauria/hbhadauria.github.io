@@ -1,0 +1,85 @@
+---
+// Registers Workbox service worker and shows an explicit reload toast when a new build waits
+---
+
+<div
+  id="pwa-reload-toast"
+  role="status"
+  aria-live="polite"
+  class="hidden fixed bottom-5 right-5 z-50 card rounded-xl px-4 py-3 shadow-2xl flex items-center gap-3 text-xs max-w-xs"
+>
+  <span class="text-fg font-medium">New version available</span>
+  <button
+    type="button"
+    id="pwa-reload-btn"
+    class="accbg rounded-md px-2.5 py-1 font-medium shrink-0"
+  >
+    Reload
+  </button>
+  <button
+    type="button"
+    id="pwa-dismiss-btn"
+    class="muted hover:text-fg mono shrink-0"
+    aria-label="Dismiss update notification"
+  >
+    ✕
+  </button>
+</div>
+
+<script>
+  const toast = document.getElementById('pwa-reload-toast');
+  const reloadBtn = document.getElementById('pwa-reload-btn');
+  const dismissBtn = document.getElementById('pwa-dismiss-btn');
+
+  let waitingWorker: ServiceWorker | null = null;
+  let refreshing = false;
+
+  function showToast(worker: ServiceWorker | null) {
+    if (!worker || !toast) return;
+    waitingWorker = worker;
+    toast.classList.remove('hidden');
+  }
+
+  dismissBtn?.addEventListener('click', () => {
+    toast?.classList.add('hidden');
+  });
+
+  reloadBtn?.addEventListener('click', () => {
+    if (waitingWorker) {
+      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    } else {
+      window.location.reload();
+    }
+  });
+
+  if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
+
+    window.addEventListener('load', async () => {
+      try {
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        if (reg.waiting) {
+          showToast(reg.waiting);
+        }
+        reg.addEventListener('updatefound', () => {
+          const installing = reg.installing;
+          if (!installing) return;
+          installing.addEventListener('statechange', () => {
+            if (
+              installing.state === 'installed' &&
+              navigator.serviceWorker.controller
+            ) {
+              showToast(reg.waiting ?? installing);
+            }
+          });
+        });
+      } catch {
+        // Ignore service worker registration errors
+      }
+    });
+  }
+</script>

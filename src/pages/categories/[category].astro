@@ -1,0 +1,30 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import PostList from '@/components/PostList.astro';
+import { CATEGORIES } from '@/content/config';
+import { getPublishedPosts, slugify } from '@/lib/utils';
+
+export function getStaticPaths() {
+  return CATEGORIES.map((name) => ({
+    params: { category: slugify(name) },
+    props: { name },
+  }));
+}
+
+const { name } = Astro.props;
+const posts = (await getPublishedPosts()).filter((p) =>
+  (p.data.categories as string[]).includes(name),
+);
+---
+
+<PageLayout
+  title={`Category: ${name}`}
+  description={`Posts filed under ${name}.`}
+  eyebrow="category"
+  prose={false}
+  wide={true}
+  subnav="writing"
+>
+  <PostList posts={posts} empty={`No ${name} posts yet.`} />
+  <p class="mt-6 text-sm"><a href="/categories/" class="acc hover:underline">← All categories</a></p>
+</PageLayout>

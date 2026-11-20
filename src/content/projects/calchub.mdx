@@ -1,0 +1,108 @@
+---
+title: "CalcHub"
+tagline: "Android finance calculators"
+description: "Offline-first Android finance calculator app: built in 24 hours with an AI agent, open-sourced, then fully revamped for v3.0.0."
+status: Live
+category: Mobile
+featured: true
+order: 1
+tags: [Kotlin, Jetpack Compose, MVVM, Navigation 3, Gemini]
+metrics:
+  - value: "34"
+    label: "calculators"
+  - value: "24h"
+    label: "idea → store (v1)"
+  - value: "55"
+    label: "JVM + UI tests"
+  - value: "0"
+    label: "network permissions"
+links:
+  playStore: https://play.google.com/store/apps/details?id=com.hsb.calchub
+  github: https://github.com/hbhadauria/CalcHub
+pubDate: 2026-11-17
+---
+import { AgentStep, DecisionRecord, BeforeAfter } from '../../components/mdx';
+
+CalcHub (`com.hsb.calchub`) is an offline-first, zero-analytics Android app with **34 calculators across 6 categories** (investment, loan, retirement, tax, trading, other). It ships with no network access (`INTERNET` is not declared in the merged release manifest). CalcHub is open-sourced under the MIT license on GitHub, and the **v3.0.0 revamp is live on Google Play**.
+
+## Timeline
+
+| Version | When | What changed |
+|:---|:---|:---|
+| **v1.0.0** | Nov 2025 | Prototype built in about 24 hours with Gemini inside Antigravity. Material 3, MVVM. Live on Google Play. |
+| **v2.0.0** | 2025-11-30 | Dark neon / glassmorphism redesign, shared calculator scaffold, donut charts, Favorites tab. |
+| **v2.1.0** | 2025-12-08 | Open-sourced under the MIT licence. Release keystore and Play credentials kept outside the repository. |
+| **v3.0.0** | 2026-11-15 to 2026-11-17 | Full revamp: toolchain upgrade, Expressive Aurora design, Navigation 3, custom charts, hardware-verified CI (**live on Google Play**). |
+
+Read the original story in [From Idea to App Store](/posts/from-idea-to-app-store-how-i-built-a-mobile-app-in-24-hours-without-coding/).
+
+## What v3.0.0 changed
+
+<BeforeAfter
+  beforeLabel="v2.x"
+  afterLabel="v3.0.0"
+  before={[
+    'Dark neon / glassmorphism with blur',
+    'Legacy NavHost navigation',
+    'Charts via library',
+    'Older Gradle / Kotlin / JDK toolchain',
+  ]}
+  after={[
+    'Expressive Aurora: Material 3 Expressive, solid tonal surfaces, no blur on API 26–37',
+    'Jetpack Navigation 3 across all 34 routes with adaptive list-detail on tablets and foldables',
+    'Custom Compose Canvas charts with scrubbing and haptics',
+    'Kotlin 2.4.21, Temurin JDK 25, JVM 25 bytecode target',
+  ]}
+/>
+
+<BeforeAfter beforeLabel="v2.1.0 · Dark Neon" afterLabel="v3.0.0 · Expressive Aurora">
+  <figure slot="before" class="space-y-2">
+    <img src="/images/calchub/v2-home.png" alt="CalcHub v2.1.0 Dark Neon home screen with glowing card grid and floating bottom navigation" class="mx-auto max-h-[440px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">Dark neon glassmorphism grid and legacy NavHost</figcaption>
+  </figure>
+  <figure slot="after" class="space-y-2">
+    <img src="/images/calchub/v3-home-light.png" alt="CalcHub v3.0.0 Expressive Aurora light home screen with Continue Hero Banner and morphing category orbs" class="mx-auto max-h-[440px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">Expressive Aurora with Continue Hero Banner and Navigation 3</figcaption>
+  </figure>
+</BeforeAfter>
+
+New in v3.0.0: a Continue banner on Home, a four-tab Tools Lab (Utilities, Compare, Vault, Formulas), and six upgraded showcase calculators, plus two extra skins (Ledger Paper and Dot Matrix).
+
+<DecisionRecord id="ADR-02" title="Dependency injection" decision="A 35-line manual AppContainer instead of Hilt / KSP">
+  Zero codegen friction on Kotlin 2.4.21 with JVM 25. The app only needs a handful of repositories.
+</DecisionRecord>
+
+<DecisionRecord id="ADR-03" title="Charts" decision="Zero-dependency charts built on Compose Canvas + PathMeasure">
+  Interactive wealth-growth, loan-amortization and FIRE-timeline charts without an external charting library.
+</DecisionRecord>
+
+## Visual Tour (`v3.0.0` Expressive Aurora)
+
+<figure class="my-6">
+  <img src="/images/calchub/v3-banner.png" alt="CalcHub v3.0.0 feature graphic showcasing Expressive Aurora financial calculators" class="rounded-xl border bd w-full" loading="lazy" />
+</figure>
+
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 my-6 not-prose">
+  <img src="/images/calchub/v3-home-light.png" alt="CalcHub v3.0.0 Expressive Aurora light home screen with Continue Hero Banner" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-home-dark.png" alt="CalcHub v3.0.0 Expressive Aurora dark mode home screen" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-sip-wealth.png" alt="CalcHub v3.0.0 SIP wealth growth chart built with Compose Canvas" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-home-loan-emi.png" alt="CalcHub v3.0.0 Home Loan EMI prepayment simulator and amortization chart" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-income-tax.png" alt="CalcHub v3.0.0 Income Tax FY26 New vs Old regime comparison" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-tools-lab.png" alt="CalcHub v3.0.0 4-tab Tools Lab featuring Utilities, Compare, Vault, and Formulas" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-themes.png" alt="CalcHub v3.0.0 multi-theme skins including Expressive Aurora, Ledger Paper, and Dot Matrix" class="rounded-xl border bd w-full" loading="lazy" />
+</div>
+
+## Quality gates
+
+<AgentStep goal="QUALITY BAR" phase="v3.0.0" result="34 unit-test suites and 55 JVM + Robolectric UI tests; 4/4 on-device Espresso + Compose tests; 0 lint errors">
+  The revamp was held to automated gates rather than eyeballing: Robolectric UI tests, instrumentation tests on a real device, SonarCloud cleanup, an R8 release build, and a CI emulator workflow.
+</AgentStep>
+
+- Real-device verification on a Samsung Galaxy S9+ (Android 10).
+- Release manifest verified with no `INTERNET` permission.
+- Automated release workflow for `v3.0.0`.
+
+## Links
+
+- [Google Play](https://play.google.com/store/apps/details?id=com.hsb.calchub)
+- [Source on GitHub](https://github.com/hbhadauria/CalcHub) (MIT)

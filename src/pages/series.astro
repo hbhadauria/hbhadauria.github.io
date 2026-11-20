@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getPublishedPosts, isoDay } from '@/lib/utils';
+
+const seriesList = (await getCollection('series')).sort((a, b) => a.data.order - b.data.order);
+const posts = await getPublishedPosts();
+---
+
+<PageLayout
+  title="Series"
+  description="Multi-part write-ups, read in order."
+  eyebrow="series"
+  prose={false}
+  wide={true}
+  subnav="writing"
+>
+  <div class="space-y-6">
+    {
+      seriesList.map((s) => {
+        const parts = posts
+          .filter((p) => p.data.series === s.data.title)
+          .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+        const showUpNext = s.data.title === 'AI-Assisted Engineering' && parts.length === 1;
+        const plannedCount = showUpNext ? 2 : parts.length;
+        return (
+          <section class="card rounded-2xl overflow-hidden">
+            <div class="grid-bg soft p-5 sm:p-6 border-b bd relative overflow-hidden">
+              <div
+                aria-hidden="true"
+                class="absolute inset-0 pointer-events-none"
+                style="background: radial-gradient(circle at 86% 20%, rgba(99, 102, 241, 0.16), transparent 65%);"
+              />
+              <div class="relative z-10 flex flex-wrap items-center justify-between gap-3">
+                <span class="mono text-[11px] acc2 font-semibold uppercase tracking-wide">
+                  SERIES · {plannedCount} {plannedCount === 1 ? 'PART' : 'PARTS'}
+                </span>
+                <span class="tag mono card">{s.data.status}</span>
+              </div>
+              <h2 class="relative z-10 serif text-2xl font-semibold text-fg mt-2">
+                {s.data.title}
+              </h2>
+              <p class="relative z-10 muted text-sm mt-1.5 max-w-2xl leading-relaxed">
+                {s.data.description}
+              </p>
+            </div>
+
+            <ol class="divide-y bd">
+              {parts.map((p) => (
+                <li>
+                  <a
+                    href={`/posts/${p.slug}/`}
+                    class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[var(--soft)]/60 transition-colors group"
+                  >
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-center gap-2 text-xs mono muted">
+                        <span class="tag acc">Part {p.data.seriesOrder}</span>
+                        <span>{isoDay(p.data.pubDate)}</span>
+                        {p.data.readingTime && (
+                          <>
+                            <span aria-hidden="true">·</span>
+                            <span>{p.data.readingTime}</span>
+                          </>
+                        )}
+                      </div>
+                      <h3 class="font-semibold text-base text-fg group-hover:text-[var(--accent)] transition-colors mt-2 leading-snug">
+                        {p.data.title}
+                      </h3>
+                      <p class="muted text-xs sm:text-sm mt-1 line-clamp-2">
+                        {p.data.description}
+                      </p>
+                    </div>
+                    <span class="mono text-xs acc shrink-0 font-medium">
+                      Read →
+                    </span>
+                  </a>
+                </li>
+              ))}
+              {showUpNext && (
+                <li>
+                  <a
+                    href="/projects/calchub/"
+                    class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[var(--soft)]/60 transition-colors group"
+                  >
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-center gap-2 text-xs mono muted">
+                        <span class="tag acc2">Part 2 · Up Next</span>
+                        <span>Case study live</span>
+                      </div>
+                      <h3 class="font-semibold text-base text-fg group-hover:text-[var(--accent)] transition-colors mt-2 leading-snug">
+                        From 24-Hour Prototype to CalcHub v3.0: Redesigning an Android App with AI &amp; Strict Quality Gates
+                      </h3>
+                      <p class="muted text-xs sm:text-sm mt-1 line-clamp-2">
+                        Expressive Aurora, Navigation 3, a 35-line AppContainer, and hardware-verified CI — explore the live case study while Part 2 is finalized.
+                      </p>
+                    </div>
+                    <span class="mono text-xs acc shrink-0 font-medium">
+                      Case study →
+                    </span>
+                  </a>
+                </li>
+              )}
+              {parts.length === 0 && !showUpNext && (
+                <li class="p-5 text-sm muted">No published parts yet.</li>
+              )}
+            </ol>
+          </section>
+        );
+      })
+    }
+  </div>
+</PageLayout>

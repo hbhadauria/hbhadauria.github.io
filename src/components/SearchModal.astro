@@ -1,0 +1,182 @@
+---
+// Pagefind search modal triggered by ⌘K / Ctrl+K or [data-search-trigger]
+---
+
+<dialog
+  id="search-modal"
+  aria-label="Search site"
+  class="backdrop:bg-black/60 backdrop:backdrop-blur-sm bg-transparent p-4 w-full max-w-2xl m-auto"
+>
+  <div class="card rounded-2xl shadow-2xl overflow-hidden text-fg">
+    <div class="flex items-center gap-3 px-4 py-3 border-b bd">
+      <span class="mono text-xs acc font-semibold">⌘K</span>
+      <input
+        id="search-input"
+        type="search"
+        placeholder="Search posts, projects, series, and pages..."
+        autocomplete="off"
+        class="w-full bg-transparent text-sm text-fg placeholder:text-[var(--muted)] focus:outline-none"
+      />
+      <button
+        type="button"
+        id="search-close"
+        class="tag mono text-[11px] muted hover:text-fg shrink-0"
+      >
+        ESC
+      </button>
+    </div>
+
+    <div
+      id="search-results"
+      class="max-h-[60vh] overflow-y-auto divide-y bd p-2 text-sm"
+    >
+      <p class="p-4 text-xs muted mono">
+        Type to search published posts, projects, and notes.
+      </p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  interface PagefindResultData {
+    url: string;
+    meta?: { title?: string };
+    excerpt?: string;
+  }
+
+  interface PagefindModule {
+    init?: () => Promise<void>;
+    search: (
+      query: string,
+    ) => Promise<{ results: Array<{ data: () => Promise<PagefindResultData> }> }>;
+  }
+
+  const dialog = document.getElementById('search-modal') as HTMLDialogElement | null;
+  const input = document.getElementById('search-input') as HTMLInputElement | null;
+  const closeBtn = document.getElementById('search-close');
+  const resultsEl = document.getElementById('search-results');
+
+  let pagefind: PagefindModule | null = null;
+  let loadFailed = false;
+
+  async function ensurePagefind(): Promise<PagefindModule | null> {
+    if (pagefind || loadFailed) return pagefind;
+    try {
+      const pagefindUrl: string = '/pagefind/pagefind.js';
+      const mod = (await import(/* @vite-ignore */ pagefindUrl)) as PagefindModule;
+      if (typeof mod.init === 'function') {
+        await mod.init();
+      }
+      pagefind = mod;
+      return pagefind;
+    } catch {
+      loadFailed = true;
+      return null;
+    }
+  }
+
+  function renderMessage(text: string) {
+    if (!resultsEl) return;
+    const p = document.createElement('p');
+    p.className = 'p-4 text-xs muted mono';
+    p.textContent = text;
+    resultsEl.replaceChildren(p);
+  }
+
+  function safeRelativeUrl(rawUrl: string): string {
+    return typeof rawUrl === 'string' && rawUrl.startsWith('/') && !rawUrl.startsWith('//')
+      ? rawUrl
+      : '/';
+  }
+
+  function appendSafeExcerpt(target: HTMLElement, rawHtml: string) {
+    if (!rawHtml) return;
+    const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+    const walk = (parent: Node, dest: HTMLElement) => {
+      for (const child of Array.from(parent.childNodes)) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          dest.appendChild(document.createTextNode(child.textContent || ''));
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          const el = child as Element;
+          if (el.tagName === 'MARK') {
+            const mark = document.createElement('mark');
+            mark.appendChild(document.createTextNode(el.textContent || ''));
+            dest.appendChild(mark);
+          } else {
+            walk(el, dest);
+          }
+        }
+      }
+    };
+    walk(doc.body, target);
+  }
+
+  async function runSearch(query: string) {
+    if (!resultsEl) return;
+    const trimmed = query.trim();
+    if (!trimmed) {
+      renderMessage('Type to search published posts, projects, and notes.');
+      return;
+    }
+
+    const pf = await ensurePagefind();
+    if (!pf) {
+      renderMessage('Search index is generated during production build (npm run build).');
+      return;
+    }
+
+    const search = await pf.search(trimmed);
+    const items = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+
+    if (items.length === 0) {
+      renderMessage(`No matches found for "${trimmed}".`);
+      return;
+    }
+
+    resultsEl.replaceChildren();
+    for (const item of items) {
+      const safeUrl = safeRelativeUrl(item.url);
+      const link = document.createElement('a');
+      link.href = safeUrl;
+      link.className =
+        'block rounded-xl p-3 hover:bg-[var(--soft)] transition-colors space-y-1';
+
+      const title = document.createElement('div');
+      title.className = 'font-medium text-fg';
+      title.textContent = item.meta?.title || safeUrl;
+
+      const excerpt = document.createElement('p');
+      excerpt.className = 'text-xs muted line-clamp-2';
+      appendSafeExcerpt(excerpt, item.excerpt || '');
+
+      const url = document.createElement('div');
+      url.className = 'mono text-[11px] acc';
+      url.textContent = safeUrl;
+
+      link.append(title, excerpt, url);
+      link.addEventListener('click', () => dialog?.close());
+      resultsEl.appendChild(link);
+    }
+  }
+
+  window.addEventListener('hsb:open-search', () => {
+    if (!dialog) return;
+    if (!dialog.open) dialog.showModal();
+    void ensurePagefind();
+    setTimeout(() => input?.focus(), 10);
+  });
+
+  closeBtn?.addEventListener('click', () => dialog?.close());
+
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+
+  let timer: number | undefined;
+  input?.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      void runSearch(input.value);
+    }, 120);
+  });
+</script>
