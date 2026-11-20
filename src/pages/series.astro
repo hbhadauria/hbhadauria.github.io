@@ -49,7 +49,7 @@ const posts = await getPublishedPosts();
               {parts.map((p) => (
                 <li>
                   <a
-                    href={`/posts/${p.slug}/`}
+                    href={`/posts/${p.id}/`}
                     class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[var(--soft)]/60 transition-colors group"
                   >
                     <div class="min-w-0">

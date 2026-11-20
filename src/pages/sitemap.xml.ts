@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
-import { CATEGORIES } from '@/content/config';
+import { CATEGORIES } from '@/content.config';
 import { SITE } from '@/data/site';
 import { getPublishedPosts, slugify } from '@/lib/utils';
 
@@ -30,8 +30,8 @@ export async function GET(context: APIContext) {
     '/projects/',
     ...CATEGORIES.map((c) => `/categories/${slugify(c)}/`),
     ...[...tags].map((t) => `/tags/${slugify(t)}/`),
-    ...posts.map((p) => `/posts/${p.slug}/`),
-    ...projects.map((p) => `/projects/${p.slug}/`),
+    ...posts.map((p) => `/posts/${p.id}/`),
+    ...projects.map((p) => `/projects/${p.id}/`),
   ];
 
   const body =

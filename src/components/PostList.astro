@@ -18,7 +18,7 @@ const { posts, empty = 'No posts yet.' } = Astro.props;
       {posts.map((post) => (
         <li>
           <a
-            href={`/posts/${post.slug}/`}
+            href={`/posts/${post.id}/`}
             class="card rounded-xl p-5 hover:border-[var(--accent)] transition-colors block group"
           >
             <div class="flex flex-wrap items-center justify-between gap-2 text-xs mono muted">

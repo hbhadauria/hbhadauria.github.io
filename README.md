@@ -4,7 +4,7 @@ Personal engineering blog and portfolio of **Harshit Bhadauria** — *Designing 
 
 ## Stack
 
-- **Framework:** Astro 5, TypeScript, MDX
+- **Framework:** Astro 7, TypeScript, MDX
 - **Styling:** Tailwind CSS with semantic light/dark design tokens
 - **Search & Assets:** Pagefind static search (`⌘K`), Satori + Resvg OpenGraph cards, RSS & Sitemap
 - **CI/CD:** GitHub Actions build verification, CodeQL/dependency checks, and manual GitHub Pages deployment

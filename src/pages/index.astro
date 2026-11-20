@@ -13,10 +13,10 @@ const projects = (await getCollection('projects')).sort(
 
 const featuredProject = projects[0];
 const latestPosts = posts.slice(0, 3);
-const latestPostUrl = latestPosts[0] ? `/posts/${latestPosts[0].slug}/` : '/archives/';
+const latestPostUrl = latestPosts[0] ? `/posts/${latestPosts[0].id}/` : '/archives/';
 
 const featuredCover =
-  featuredProject?.slug === 'calchub'
+  featuredProject?.id === 'calchub'
     ? {
         src: '/images/calchub/v3-banner.png',
         badge: 'v3.0 LIVE',
@@ -85,7 +85,7 @@ const blueprintGlows = [
           <span class="mono text-[11px] text-[#8b949e]">whoami --json</span>
         </div>
         <pre
-          class="mono !m-0 !border-0 !rounded-none !bg-transparent whitespace-pre-wrap break-words text-xs leading-relaxed p-4"
+          class="mono m-0! border-0! rounded-none! bg-transparent! whitespace-pre-wrap break-words text-xs leading-relaxed p-4"
         ><span style="color:#8b949e">$</span> whoami --json
 {`{`}
   <span style="color:#a5d6ff">"role"</span>:    <span style="color:#a5d6ff">"Tech Solution Architect"</span>,
@@ -191,7 +191,7 @@ const blueprintGlows = [
             </div>
             <div class="flex flex-wrap gap-2 mt-5 text-sm">
               <a
-                href={`/projects/${featuredProject.slug}/`}
+                href={`/projects/${featuredProject.id}/`}
                 class="accbg rounded-md px-3.5 py-1.5 font-medium hover:opacity-90 transition-opacity"
               >
                 Read story →
@@ -242,7 +242,7 @@ const blueprintGlows = [
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-4">
           {latestPosts.map((post, idx) => (
             <article class="card rounded-xl overflow-hidden flex flex-col hover:border-[var(--accent)] transition-colors">
-              <a href={`/posts/${post.slug}/`} class="flex flex-col flex-1">
+              <a href={`/posts/${post.id}/`} class="flex flex-col flex-1">
                 <div class="h-28 relative overflow-hidden p-4 flex flex-col justify-between border-b bd grid-bg soft">
                   <div
                     aria-hidden="true"

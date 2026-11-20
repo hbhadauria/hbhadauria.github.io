@@ -1,17 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import PostLayout from '@/layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content, headings } = await post.render();
+const { Content, headings } = await render(post);
 const { data } = post;
 
 let seriesTotal: number | undefined;
@@ -24,7 +24,7 @@ if (data.series) {
   const next = siblings.find(
     (p) => (p.data.seriesOrder ?? 0) > (data.seriesOrder ?? 0),
   );
-  if (next) nextSeriesPost = { title: next.data.title, slug: next.slug };
+  if (next) nextSeriesPost = { title: next.data.title, slug: next.id };
 }
 ---
 
@@ -42,7 +42,7 @@ if (data.series) {
   nextSeriesPost={nextSeriesPost}
   tldr={data.tldr}
   headings={headings}
-  ogImage={`/og/posts/${post.slug}.png`}
+  ogImage={`/og/posts/${post.id}.png`}
 >
   <Content />
 </PostLayout>

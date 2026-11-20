@@ -1,19 +1,20 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import tailwind from '@astrojs/tailwind';
-import AstroPWA from '@vite-pwa/astro';
+import tailwindcss from '@tailwindcss/vite';
+import { AstroPWAIntegration as AstroPWA } from '@vite-pwa/astro';
 
 export default defineConfig({
   site: 'https://hbhadauria.github.io',
+  vite: {
+    plugins: [tailwindcss()],
+  },
   integrations: [
-    tailwind({
-      applyBaseStyles: false,
-    }),
     mdx(),
     sitemap(),
     AstroPWA({
       registerType: 'prompt',
+      includeManifestIcons: false,
       manifest: {
         name: 'Harshit Bhadauria · HSB Learnings',
         short_name: 'HSB Learnings',
@@ -34,7 +35,7 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
+      generateSW: {
         globPatterns: [
           '**/*.{css,js,svg,woff,woff2}',
           'index.html',

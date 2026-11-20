@@ -83,7 +83,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       },
     },
     ...posts.map((post) => ({
-      params: { slug: `posts/${post.slug}` },
+      params: { slug: `posts/${post.id}` },
       props: {
         title: post.data.title,
         description: post.data.description,
@@ -94,7 +94,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       },
     })),
     ...projects.map((project) => ({
-      params: { slug: `projects/${project.slug}` },
+      params: { slug: `projects/${project.id}` },
       props: {
         title: project.data.title,
         description: project.data.description,
@@ -117,6 +117,7 @@ export const GET: APIRoute = async ({ props }) => {
       style: {
         width: '1200px',
         height: '630px',
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',

@@ -32,7 +32,7 @@ const capabilities = [
     {
       projects.map((p) => {
         const isSingle = projects.length === 1;
-        const hasCalcHubCover = p.slug === 'calchub';
+        const hasCalcHubCover = p.id === 'calchub';
         return (
           <article
             class={`card rounded-2xl overflow-hidden hover:border-[var(--accent)] transition-colors ${
@@ -40,7 +40,7 @@ const capabilities = [
             }`}
           >
             <a
-              href={`/projects/${p.slug}/`}
+              href={`/projects/${p.id}/`}
               class={`block relative overflow-hidden ${isSingle ? 'min-h-[250px]' : 'h-48'}`}
               style="background: linear-gradient(135deg, #052e2b 0%, #0b1320 45%, #1e1b4b 100%);"
             >
@@ -80,7 +80,7 @@ const capabilities = [
                   <span class="tag acc2">{p.data.status}</span>
                 </div>
                 <h2 class="font-semibold text-xl text-fg mt-1">
-                  <a href={`/projects/${p.slug}/`} class="hover:text-[var(--accent)] transition-colors">
+                  <a href={`/projects/${p.id}/`} class="hover:text-[var(--accent)] transition-colors">
                     {p.data.title}
                   </a>
                 </h2>
@@ -106,7 +106,7 @@ const capabilities = [
 
               <div class="flex flex-wrap gap-2 mt-5 pt-4 border-t bd text-xs font-medium">
                 <a
-                  href={`/projects/${p.slug}/`}
+                  href={`/projects/${p.id}/`}
                   class="accbg rounded-md px-3.5 py-1.5 hover:opacity-90 transition-opacity"
                 >
                   Case study →
