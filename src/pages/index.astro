@@ -32,10 +32,9 @@ const blueprintGlows = [
 
 <BaseLayout title={SITE.brandTitle} description={SITE.description}>
   <!-- Architect Hero + Terminal Card -->
-  <section class="grid-bg">
+  <section class="grid-bg hero-grid">
     <div
       class="max-w-[1140px] mx-auto px-5 sm:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-10 items-center"
-      style="background: linear-gradient(90deg, var(--bg) 55%, transparent);"
     >
       <div class="min-w-0">
         <div class="mono text-xs acc2">
@@ -54,7 +53,7 @@ const blueprintGlows = [
             href={latestPostUrl}
             class="accbg rounded-md px-4 py-2 font-medium hover:opacity-90 transition-opacity"
           >
-            Read the latest →
+            Read the latest <span class="arrow-nudge" aria-hidden="true">→</span>
           </a>
           <a
             href="/projects/"
@@ -86,13 +85,13 @@ const blueprintGlows = [
         </div>
         <pre
           class="mono m-0! border-0! rounded-none! bg-transparent! whitespace-pre-wrap break-words text-xs leading-relaxed p-4"
-        ><span style="color:#8b949e">$</span> whoami --json
-{`{`}
-  <span style="color:#a5d6ff">"role"</span>:    <span style="color:#a5d6ff">"Tech Solution Architect"</span>,
-  <span style="color:#a5d6ff">"focus"</span>:   [<span style="color:#a5d6ff">"Architecture"</span>, <span style="color:#a5d6ff">"Cloud"</span>, <span style="color:#a5d6ff">"Distributed Systems"</span>],
-  <span style="color:#a5d6ff">"ai"</span>:      [<span style="color:#a5d6ff">"Gemini"</span>, <span style="color:#a5d6ff">"Claude"</span>, <span style="color:#a5d6ff">"Copilot"</span>],
-  <span style="color:#a5d6ff">"shipped"</span>: <span style="color:#d2a8ff">"CalcHub v3.0 · Play Store"</span>
-{`}`}</pre>
+        ><span style="color:#8b949e">$</span> <span class="term-cmd">whoami --json</span>
+<span class="term-line" style="--d: 0.24s">{`{`}</span>
+<span class="term-line" style="--d: 0.29s">  <span style="color:#a5d6ff">"role"</span>:    <span style="color:#a5d6ff">"Tech Solution Architect"</span>,</span>
+<span class="term-line" style="--d: 0.34s">  <span style="color:#a5d6ff">"focus"</span>:   [<span style="color:#a5d6ff">"Architecture"</span>, <span style="color:#a5d6ff">"Cloud"</span>, <span style="color:#a5d6ff">"Distributed Systems"</span>],</span>
+<span class="term-line" style="--d: 0.39s">  <span style="color:#a5d6ff">"ai"</span>:      [<span style="color:#a5d6ff">"Gemini"</span>, <span style="color:#a5d6ff">"Claude"</span>, <span style="color:#a5d6ff">"Copilot"</span>],</span>
+<span class="term-line" style="--d: 0.44s">  <span style="color:#a5d6ff">"shipped"</span>: <span style="color:#d2a8ff">"CalcHub v3.0 · Play Store"</span></span>
+<span class="term-line" style="--d: 0.49s">{`}`} <span class="term-cursor" aria-hidden="true"></span></span></pre>
       </div>
     </div>
   </section>
@@ -102,7 +101,7 @@ const blueprintGlows = [
     <div class="flex justify-between items-baseline">
       <h2 class="font-semibold text-lg text-fg">Featured project</h2>
       <a href="/projects/" class="text-sm acc hover:underline">
-        All projects →
+        All projects <span class="arrow-nudge" aria-hidden="true">→</span>
       </a>
     </div>
 
@@ -110,11 +109,11 @@ const blueprintGlows = [
       featuredProject ? (
         <div class="card rounded-2xl overflow-hidden mt-4 grid grid-cols-1 md:grid-cols-[1.05fr_1.15fr]">
           {featuredCover ? (
-            <div class="min-h-[240px] relative overflow-hidden flex flex-col justify-between" style="background: linear-gradient(135deg, #052e2b 0%, #0b1320 45%, #1e1b4b 100%);">
+            <div class="aspect-[1024/500] md:aspect-auto md:min-h-[260px] relative overflow-hidden flex flex-col justify-between" style="background: linear-gradient(135deg, #052e2b 0%, #0b1320 45%, #1e1b4b 100%);">
               <img src={featuredCover.src} alt="CalcHub v3.1.0 Expressive Aurora financial calculators showcase" class="absolute inset-0 w-full h-full object-contain" loading="eager" />
               <div
                 aria-hidden="true"
-                class="absolute inset-0 bg-gradient-to-t from-[#0b0d12]/75 via-transparent to-[#0b0d12]/45 pointer-events-none"
+                class="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0b0d12]/55 to-transparent pointer-events-none"
               />
               <div class="relative z-10 flex items-center justify-between gap-2 p-3.5">
                 <span class="text-[11px] mono bg-black/60 backdrop-blur-sm text-white border border-white/15 rounded px-2 py-0.5">
@@ -124,13 +123,6 @@ const blueprintGlows = [
                   {featuredProject.data.status.toUpperCase()}
                   {featuredCover.badge ? ` · ${featuredCover.badge}` : ''}
                 </span>
-              </div>
-              <div class="relative z-10 flex flex-wrap gap-1.5 px-3.5 pb-3 pt-10">
-                {featuredProject.data.tags.slice(0, 4).map((tag) => (
-                  <span class="text-[11px] mono bg-black/55 backdrop-blur-sm text-slate-200 border border-white/15 rounded-full px-2.5 py-0.5">
-                    {tag}
-                  </span>
-                ))}
               </div>
             </div>
           ) : (
@@ -188,13 +180,20 @@ const blueprintGlows = [
                   ))}
                 </div>
               )}
+              {featuredProject.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5 mt-4">
+                  {featuredProject.data.tags.slice(0, 4).map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              )}
             </div>
             <div class="flex flex-wrap gap-2 mt-5 text-sm">
               <a
                 href={`/projects/${featuredProject.id}/`}
                 class="accbg rounded-md px-3.5 py-1.5 font-medium hover:opacity-90 transition-opacity"
               >
-                Read story →
+                Read story <span class="arrow-nudge" aria-hidden="true">→</span>
               </a>
               {featuredProject.data.links?.playStore && (
                 <a
@@ -233,7 +232,7 @@ const blueprintGlows = [
     <div class="flex justify-between items-baseline">
       <h2 class="font-semibold text-lg text-fg">Latest writing</h2>
       <a href="/archives/" class="text-sm acc hover:underline">
-        All posts →
+        All posts <span class="arrow-nudge" aria-hidden="true">→</span>
       </a>
     </div>
 

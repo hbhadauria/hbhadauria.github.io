@@ -41,7 +41,7 @@ const capabilities = [
           >
             <a
               href={`/projects/${p.id}/`}
-              class={`block relative overflow-hidden ${isSingle ? 'min-h-[250px]' : 'h-48'}`}
+              class={`block relative overflow-hidden ${isSingle ? 'aspect-[1024/500] md:aspect-auto md:min-h-[260px]' : 'h-48'}`}
               style="background: linear-gradient(135deg, #052e2b 0%, #0b1320 45%, #1e1b4b 100%);"
             >
               {hasCalcHubCover ? (
@@ -109,7 +109,7 @@ const capabilities = [
                   href={`/projects/${p.id}/`}
                   class="accbg rounded-md px-3.5 py-1.5 hover:opacity-90 transition-opacity"
                 >
-                  Case study →
+                  Case study <span class="arrow-nudge" aria-hidden="true">→</span>
                 </a>
                 {p.data.links?.playStore && (
                   <a
@@ -148,7 +148,7 @@ const capabilities = [
         </h2>
       </div>
       <a href="/about/" class="text-sm acc hover:underline">
-        Full toolbelt →
+        Full toolbelt <span class="arrow-nudge" aria-hidden="true">→</span>
       </a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
