@@ -1,0 +1,124 @@
+---
+title: "CalcHub v3.0 to v3.1: Auditing AI-Written Math, Taming Duplication & Hardening CI with Agents"
+description: "How AI-assisted engineering evolved in CalcHub v3.1.0: auditing 8 formula bugs, mockup-first theming, static-analysis refactoring, and 42 offline calculators."
+pubDate: 2026-11-23T09:00:00+05:30
+draft: false
+categories: [Apps, AI]
+tags: [android, kotlin, compose, architecture, cicd, agents, design-systems, ai]
+series: "AI-Assisted Engineering"
+seriesOrder: 3
+readingTime: "6 min read"
+tldr: "Fast AI prototypes leave behind subtle formula bugs and duplicated UI code. v3.1.0 used AI agents inside a tighter feedback loop: auditing all 30 existing calculators, previewing Minimal Black in HTML before coding, and letting static analysis drive a 950-line deduplication refactor."
+---
+import { AgentStep, DecisionRecord, BeforeAfter } from '../../components/mdx';
+
+Across this series, the way I work with AI agents has shifted at every release:
+
+- [Part 1](/posts/from-idea-to-app-store-how-i-built-a-mobile-app-in-24-hours-without-coding/) was **speed**—getting CalcHub from idea to Google Play in 24 hours.
+- [Part 2](/posts/calchub-v3-redesign-with-ai/) was **architecture & taste**—constraining the `v3.0.0` revamp with HTML mockups, ADRs, Navigation 3, and on-device tests.
+- **Part 3 (`v3.1.0`)** is **trust & maintainability**—using AI agents inside an automated audit loop to fix subtle math bugs left over from rapid generation, scale from 34 to 42 calculators, and eliminate duplicated screen boilerplate.
+
+The `v3.1.0` update landed on `main` on November 22, 2026 (`150` files changed across domain math, Compose screens, unit/UI tests, and CI workflows).
+
+<BeforeAfter
+  beforeLabel="v3.0.0"
+  afterLabel="v3.1.0"
+  before={[
+    '34 calculators',
+    '3 themes (Aurora, Ledger, Matrix)',
+    'Inputs-first layouts with duplicated screen boilerplate',
+    '34 suites / 55 JVM + Robolectric tests',
+  ]}
+  after={[
+    '42 calculators (8 new + CTC Salary mode)',
+    '4 themes (+ Minimal Black AMOLED)',
+    'Compact result-first layouts on shared scaffolds',
+    '41 suites / 116 JVM + Robolectric tests',
+  ]}
+/>
+
+<figure class="my-6">
+  <img src="/images/calchub/v3-1-banner.png" alt="CalcHub v3.1.0 feature banner highlighting 40+ offline financial calculators, SIP, Home Loan EMI, Income Tax FY26, and Tools Lab" class="rounded-xl border bd w-full" loading="lazy" />
+</figure>
+
+## Auditing AI-written financial math
+
+Shipping fast in `v1.0.0` proved that AI can scaffold 30 financial calculators overnight. It also left behind a classic AI-prototyping risk: formulas that look plausible on happy-path inputs but drift on regional conventions or edge cases.
+
+Before letting an agent add a single new feature for `v3.1.0`, I ran a line-by-line audit of all 30 existing objects in `domain/logic/`. That pass uncovered **8 real calculation issues**:
+
+- **GST (Inclusive)**: returned the tax fraction cleanly against the true pre-tax base rather than approximating from the gross figure.
+- **Flat vs. Reducing**: compared identical quoted interest rates fairly across flat-rate and reducing-balance loans.
+- **SWP**: stopped summing monthly withdrawals once the corpus depleted and handled the partial final payout.
+- **RD**: switched from monthly to Indian bank-standard quarterly compounding.
+- **SSY**: capped deposits at 15 years while continuing to compound through the 21-year maturity window.
+- **EPF**: accrued monthly balances and credited interest annually.
+- **APY**: aligned monthly contribution tables with official PFRDA slabs for entry ages 18–40 across all five pension tiers (₹1K–₹5K).
+- **Income Tax**: added Section 87A rebate and 4% cess to the Old Regime, and moved the FY26 New Regime calculations out of UI screens into `IncomeTaxCalculator`.
+
+<AgentStep goal="MATH AUDIT & EDGE CASES" phase="Domain verification" result="8 formula bugs fixed · 30 existing engines guarded · 41 suites / 116 unit + Robolectric tests passing">
+  Audit every domain calculator against Indian financial rules, extract UI-inline formulas (`StepUpSipCalculator`, `LoanScheduleCalculator`, `IncomeTaxCalculator.calculateFy26NewRegime`), guard against zero, negative, `0%` rate, `NaN`, and `Infinity` inputs, and lock each fix with regression tests.
+</AgentStep>
+
+On top of those fixes, I added an optional **Adjust for Inflation** toggle (`0–15%`, defaulting to `6%`) inside SIP, Step-up SIP, and Lumpsum so users can discount projected maturity values to today's purchasing power.
+
+## Scaling from 34 to 42 calculators with a spec-driven pattern
+
+Once the domain contracts, edge-case guards, and unit-test conventions were locked, adding new calculators stopped being ad-hoc prompt engineering. An agent could follow the exact repository pattern to implement **8 new offline calculators** (bringing CalcHub from `34` to `42` tools, with `14` `Popular` picks), plus an upgraded **Salary** calculator with an instant CTC-to-in-hand FY26 New Regime mode:
+
+1. **Capital Gains Tax (FY26)** — STCG/LTCG estimates across asset holding periods.
+2. **Goal SIP Planner** — reverse-calculates the monthly SIP needed to hit a target corpus.
+3. **Loan Prepayment Savings** — quantifies tenure reduction and interest saved from lump-sum or recurring prepayments.
+4. **Credit Card Payoff** — models minimum-due traps versus fixed monthly payments.
+5. **FIRE / Coast-FIRE** — calculates Financial Independence corpus targets and Coast-FIRE milestones.
+6. **Buy vs. Rent** — compares net wealth from home ownership against renting and investing the surplus.
+7. **Spend vs. Invest** — shows the long-term opportunity cost of discretionary purchases.
+8. **Freelance Tax (Section 44ADA)** — estimates presumptive tax liability at 50% taxable profit under FY26 New Regime slabs.
+
+To keep 42 tools fast to scan, `v3.1.0` also added a **Popular** filter orb on Home, starter preset chips, expandable plain-English financial term hints (`FinanceTermTooltip`), and one-tap offline result sharing via Android's `Intent.ACTION_SEND` sheet.
+
+## Mockup-before-code & using static analysis to clean up AI boilerplate
+
+<BeforeAfter beforeLabel="v3.0.0 · Aurora Home" afterLabel="v3.1.0 · Aurora Home + Popular Orb">
+  <figure slot="before" class="space-y-2">
+    <img src="/images/calchub/v3-home-light.png" alt="CalcHub v3.0.0 Expressive Aurora light home screen showing 30+ calculators and category orbs" class="mx-auto max-h-[460px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">v3.0.0 Home with 30+ copy and standard bottom bar</figcaption>
+  </figure>
+  <figure slot="after" class="space-y-2">
+    <img src="/images/calchub/v3-1-home-light.png" alt="CalcHub v3.1.0 Expressive Aurora light home screen with 40+ calculators, Popular filter orb, and floating bottom navigation" class="mx-auto max-h-[460px] w-auto rounded-xl border bd" loading="lazy" />
+    <figcaption class="text-xs muted text-center">v3.1.0 adds the Popular orb (14 picks), 40+ copy, and a floating nav bar</figcaption>
+  </figure>
+</BeforeAfter>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6 not-prose">
+  <img src="/images/calchub/v3-1-themes.png" alt="CalcHub v3.1.0 Appearance & Theme sheet featuring Aurora, Ledger Paper, Dot Matrix, Minimal Black, and scoped gradients" class="rounded-xl border bd w-full" loading="lazy" />
+  <img src="/images/calchub/v3-1-tools-lab.png" alt="CalcHub v3.1.0 Tools Lab showing the underline tab bar for Utilities, Compare, Vault, and Formulas" class="rounded-xl border bd w-full" loading="lazy" />
+</div>
+
+Like `v3.0.0`, new visual work started outside Kotlin: **Minimal Black** (`CalcHubSkin.MINIMAL_BLACK`, pure AMOLED contrast) was prototyped as an HTML comparison mockup rendered in headless Chrome before modifying theme tokens. `v3.1.0` also scoped background gradients strictly to Aurora, moved to a floating bottom navigation bar, gave Tools Lab an underline tab bar, and added an **About CalcHub** dialog.
+
+The bigger AI lesson, though, came from copy-paste drift. Generating dozens of Compose screens quickly creates repeated scaffolds, result cards, and currency formatters. Instead of reviewing 42 screens manually, I pointed **PMD CPD** (copy-paste detection) and **`detekt` / SonarQube** complexity rules at the codebase and used those findings directly as the agent's refactoring target.
+
+<DecisionRecord id="ADR-04" title="Calculator layouts" decision="Result-first ordering on shared Compose scaffolds">
+  All 42 calculator screens now follow `Result -> Inputs -> Charts` backed by `rememberSaveable` state, and share `CalculatorScrollScaffold`, `StandardInvestmentCalculatorLayout`, and `StandardResultsCalculatorLayout`. Static-analysis-driven refactoring removed roughly 950 net lines of duplicated boilerplate and cut cross-file duplicate blocks from 122 to 79 (with zero duplication hits left in the refactored screens).
+</DecisionRecord>
+
+## Local pre-push gates & CI hardening
+
+<AgentStep goal="QUALITY & CI GATES" phase="v3.1.0" result="41 suites / 116 JVM + Robolectric tests · 4/4 on-device Espresso + Compose · 0 lint errors · hardened workflows">
+  Run local static analysis and workflow audits (`detekt`, PMD CPD, `actionlint`, `zizmor`) alongside JVM/Robolectric tests and real-device instrumentation checks before pushing PR #33.
+</AgentStep>
+
+Key CI and maintainability changes from `v3.0.0` to `v3.1.0` include:
+
+- **Automated complexity cleanup**: introduced `FireInput` and `BuyVsRentInput` parameter objects and extracted helper composables to clear SonarQube parameter-count and cognitive-complexity checks.
+- **PR validation**: wired `pull_request` triggers on `main` for unit tests, `lintDebug`, and `assembleDebug`, and disabled failing PR comment posts from the test reporter.
+- **Least-privilege workflows**: locked top-level `permissions: {}` across workflows, disabled persisted checkout credentials, removed inline expression interpolation in shell blocks, and separated GitHub release packaging into `github-release.yml`.
+- **Release signing & symbols**: enabled native debug symbols in release bundles and environment-driven release signing.
+
+## Status & Next Steps
+
+**`v3.1.0` (`VERSION_CODE=6`) is coming soon**—it is merged on `main` with CalcHub's offline-first guarantee intact (`0` network permissions in the merged release manifest), while `v3.0.0` remains live on Google Play. For the full project overview across all releases, see the [CalcHub case study](/projects/calchub/).
+
+- [**Download CalcHub on Google Play →**](https://play.google.com/store/apps/details?id=com.hsb.calchub)
+- [Source on GitHub](https://github.com/hbhadauria/CalcHub) (MIT)
